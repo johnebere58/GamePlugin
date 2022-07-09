@@ -7,13 +7,13 @@ import 'package:gameplugin/src/assets/ball_assets.dart';
 import 'package:gameplugin/src/blocs/ball_controller.dart';
 import 'package:gameplugin/src/blocs/pop_single_text_controller.dart';
 import 'package:gameplugin/src/blocs/restart_controller.dart';
-import 'package:gameplugin/src/settings/ball_info.dart';
+import 'package:gameplugin/src/models/ball_info.dart';
 import 'package:gameplugin/src/utils/screen_utils.dart';
 import 'package:gameplugin/src/utils/widget_utils.dart';
 
 import '../blocs/ball_event_controller.dart';
-import '../settings/ball_count.dart';
-import '../settings/game_settings.dart';
+import '../models/ball_count.dart';
+import '../models/game_settings.dart';
 import '../extensions/ball_count_extention.dart';
 import '../widgets/ball_widget.dart';
 
@@ -58,9 +58,9 @@ class _FindBallGameState extends State<FindBallGame> {
        });
     }));
 
-    Future.delayed(const Duration(milliseconds: 500),(){
-      RestartController.instance.restartGame();
-    });
+    // Future.delayed(const Duration(milliseconds: 500),(){
+    //   RestartController.instance.restartGame();
+    // });
     super.initState();
   }
 

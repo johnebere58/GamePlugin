@@ -5,7 +5,7 @@ import 'package:gameplugin/src/utils/widget_utils.dart';
 
 import '../gameplugin.dart';
 import 'repository/repository.dart';
-import 'settings/game_settings.dart';
+import 'models/game_settings.dart';
 
 class GameManager{
 

@@ -1,29 +1,21 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gameplugin/gameplugin.dart';
-import 'package:gameplugin/gameplugin_platform_interface.dart';
-import 'package:gameplugin/gameplugin_method_channel.dart';
-import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:gameplugin/src/games/find_ball_game.dart';
+import 'package:gameplugin/src/models/game_settings.dart';
+import 'package:gameplugin/src/repository/repository.dart';
+import 'package:gameplugin/src/extensions/ball_count_extention.dart';
 
-class MockGamepluginPlatform 
-    with MockPlatformInterfaceMixin
-    implements GamepluginPlatform {
+void main(){
 
-  @override
-  Future<String?> getPlatformVersion() => Future.value('42');
-}
+  group('Test ball game', (){
 
-void main() {
-  final GamepluginPlatform initialPlatform = GamepluginPlatform.instance;
+    test('Check if ballcount converts to number', (){
 
-  test('$MethodChannelGameplugin is the default instance', () {
-    expect(initialPlatform, isInstanceOf<MethodChannelGameplugin>());
+      GameSettings gameSettings = GameSettings(ballCount: BallCount.three);
+
+      expect(gameSettings.ballCount.getValue, 4);
+
+    });
   });
-
-  test('getPlatformVersion', () async {
-    Gameplugin gamepluginPlugin = Gameplugin();
-    MockGamepluginPlatform fakePlatform = MockGamepluginPlatform();
-    GamepluginPlatform.instance = fakePlatform;
   
-    expect(await gamepluginPlugin.getPlatformVersion(), '42');
-  });
 }

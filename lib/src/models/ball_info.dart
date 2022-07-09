@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gameplugin/src/settings/ball_shape.dart';
+import 'package:gameplugin/src/models/ball_shape.dart';
 
 class BallInfo{
 

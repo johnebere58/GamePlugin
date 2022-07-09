@@ -1,9 +1,9 @@
 
  import 'package:flutter/material.dart';
 
-import '../settings/ball_info.dart';
-import '../settings/ball_shape.dart';
-import '../settings/game_settings.dart';
+import '../models/ball_info.dart';
+import '../models/ball_shape.dart';
+import '../models/game_settings.dart';
 
 class BallAssets{
 

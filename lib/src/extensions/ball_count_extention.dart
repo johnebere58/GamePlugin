@@ -1,5 +1,5 @@
 
-import 'package:gameplugin/src/settings/ball_count.dart';
+import 'package:gameplugin/src/models/ball_count.dart';
 
 extension BallCountExtension on BallCount{
 

@@ -2,8 +2,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gameplugin/src/repository/repository.dart';
-import 'package:gameplugin/src/settings/ball_info.dart';
-import 'package:gameplugin/src/settings/text_data.dart';
+import 'package:gameplugin/src/models/ball_info.dart';
+import 'package:gameplugin/src/models/text_data.dart';
 
 class PopSingleTextController {
 

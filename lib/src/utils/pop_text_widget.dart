@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gameplugin/src/blocs/pop_single_text_controller.dart';
-import 'package:gameplugin/src/settings/text_data.dart';
+import 'package:gameplugin/src/models/text_data.dart';
 import 'package:gameplugin/src/utils/screen_utils.dart';
 import 'package:gameplugin/src/utils/widget_utils.dart';
 

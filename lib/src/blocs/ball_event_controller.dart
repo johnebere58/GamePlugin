@@ -1,11 +1,15 @@
 
 import 'dart:async';
 import 'package:gameplugin/src/repository/repository.dart';
-import 'package:gameplugin/src/settings/ball_events.dart';
+import 'package:gameplugin/src/models/ball_events.dart';
 
 class BallEventController {
 
   static BallEventController get instance => getIt<BallEventController>();
+
+  // BallEventController._();
+  //
+  // factory BallEventController()=>BallEventController._();
 
   final StreamController<BallEvents> _streamController = StreamController.broadcast();
 

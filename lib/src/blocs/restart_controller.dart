@@ -1,7 +1,7 @@
 
 import 'dart:async';
 import 'package:gameplugin/src/repository/repository.dart';
-import 'package:gameplugin/src/settings/ball_info.dart';
+import 'package:gameplugin/src/models/ball_info.dart';
 
 class RestartController {
 

@@ -6,7 +6,7 @@ import 'package:gameplugin/gameplugin.dart';
 import 'package:gameplugin/src/assets/color_assets.dart';
 import 'package:gameplugin/src/blocs/ball_event_controller.dart';
 import 'package:gameplugin/src/blocs/restart_controller.dart';
-import 'package:gameplugin/src/settings/game_settings.dart';
+import 'package:gameplugin/src/models/game_settings.dart';
 import 'package:gameplugin/src/utils/dailog_utils.dart';
 import 'package:gameplugin/src/utils/pop_text_widget.dart';
 

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:gameplugin/gameplugin.dart';
 import 'package:gameplugin/src/blocs/ball_controller.dart';
 import 'package:gameplugin/src/blocs/ball_event_controller.dart';
-import 'package:gameplugin/src/settings/ball_events.dart';
-import 'package:gameplugin/src/settings/ball_info.dart';
+import 'package:gameplugin/src/models/ball_events.dart';
+import 'package:gameplugin/src/models/ball_info.dart';
 
 
 /// Ball Widget used to create square or circle balls
@@ -53,45 +53,33 @@ class _BallWidgetState extends State<BallWidget> {
   Widget build(BuildContext context) {
     Color color = _ballInfo!.ballColor;
     BallShape ballShape = _ballInfo!.ballShape;
-    return GestureDetector(
-      key: widget.key,
-      onTap: () {
-        if (_hideBall == false) return;
+    return SizedBox(
+        width: _ballInfo!.ballSize,
+        height: _ballInfo!.ballSize,
+        child: Card(
+          margin: EdgeInsets.zero,
+          shape:
 
-        _hideBall = false;
-        setState(() {});
-        _ballEventController.showBall();
-        _ballController.ballTapped(_ballInfo!);
-
-      },
-      child: SizedBox(
-          width: _ballInfo!.ballSize,
-          height: _ballInfo!.ballSize,
-          child: Card(
-            margin: EdgeInsets.zero,
-            shape:
-
-                ballShape == BallShape.square?
-               RoundedRectangleBorder(
-                 borderRadius: BorderRadius.circular(5),
-                   side: BorderSide(
-                       color: !_hideBall ? Colors.transparent : Colors.black
-                           .withOpacity(.4),
-                       width: 2
-                   )
-               )
-              :
-            CircleBorder(
-                side: BorderSide(
-                    color: !_hideBall ? Colors.transparent : Colors.black
-                        .withOpacity(.4),
-                    width: 2
-                )
-            ),
-            color: _hideBall ? Colors.white : color,
-            elevation: 10,
-            shadowColor: Colors.black.withOpacity(.3),
-          )),
-    );
+              ballShape == BallShape.square?
+             RoundedRectangleBorder(
+               borderRadius: BorderRadius.circular(5),
+                 side: BorderSide(
+                     color: !_hideBall ? Colors.transparent : Colors.black
+                         .withOpacity(.4),
+                     width: 2
+                 )
+             )
+            :
+          CircleBorder(
+              side: BorderSide(
+                  color: !_hideBall ? Colors.transparent : Colors.black
+                      .withOpacity(.4),
+                  width: 2
+              )
+          ),
+          color: _hideBall ? Colors.white : color,
+          elevation: 10,
+          shadowColor: Colors.black.withOpacity(.3),
+        ));
   }
 }
