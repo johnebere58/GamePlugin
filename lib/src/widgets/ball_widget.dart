@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:gameplugin/src/blocs/ball_controller.dart';
 import 'package:gameplugin/src/blocs/ball_event_controller.dart';
 import 'package:gameplugin/src/settings/ball_events.dart';
 import 'package:gameplugin/src/settings/ball_info.dart';
@@ -22,6 +23,7 @@ class BallWidget extends StatefulWidget {
 class _BallWidgetState extends State<BallWidget> {
 
   final BallEventController _ballEventController = BallEventController.instance;
+  final BallController _ballController = BallController.instance;
   late BallEvents _ballEvents;
   late StreamSubscription _ballSub;
   BallInfo? _ballInfo;
@@ -57,13 +59,17 @@ class _BallWidgetState extends State<BallWidget> {
         _hideBall = false;
         setState(() {});
         _ballEventController.showBall();
+        _ballController.ballTapped(_ballInfo!);
+
       },
       child: SizedBox(
           width: _ballInfo!.ballSize,
           height: _ballInfo!.ballSize,
           child: Card(
             margin: EdgeInsets.zero,
-            shape: CircleBorder(
+            shape:
+
+            CircleBorder(
                 side: BorderSide(
                     color: !_hideBall ? Colors.transparent : Colors.black
                         .withOpacity(.4),

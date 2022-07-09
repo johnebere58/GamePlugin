@@ -4,7 +4,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:gameplugin/src/assets/ball_assets.dart';
+import 'package:gameplugin/src/blocs/ball_controller.dart';
+import 'package:gameplugin/src/blocs/pop_single_text_controller.dart';
 import 'package:gameplugin/src/blocs/restart_controller.dart';
+import 'package:gameplugin/src/settings/ball_info.dart';
 import 'package:gameplugin/src/utils/screen_utils.dart';
 import 'package:gameplugin/src/utils/widget_utils.dart';
 
@@ -41,10 +44,23 @@ class _FindBallGameState extends State<FindBallGame> {
     _allBalls = BallAssets(gameSettings).getAllBalls();
     createBalls();
     _streamSubscriptions.add(RestartController.instance.stream.listen((bool afresh) {
-         Future.delayed(const Duration(seconds: 1),(){
-           startShuffle();
-         });
+      startShuffle();
     }));
+    _streamSubscriptions.add(BallController.instance.stream.listen((BallInfo ballInfo) {
+       if(ballInfo.ballId == _ballIndexToFind){
+         PopSingleTextController.instance.popCorrect();
+       }else{
+         PopSingleTextController.instance.popWrong();
+       }
+
+       Future.delayed(const Duration(milliseconds: 1000),(){
+         RestartController.instance.restartGame();
+       });
+    }));
+
+    Future.delayed(const Duration(milliseconds: 500),(){
+      RestartController.instance.restartGame();
+    });
     super.initState();
   }
 
@@ -94,7 +110,7 @@ class _FindBallGameState extends State<FindBallGame> {
                 return AnimatedPositioned(
                   // alignment: alignment,
                   top: getTop(key),left:getLeft(key),
-                  duration: const Duration(milliseconds: 500),
+                  duration: const Duration(milliseconds: /*gameSettings.ballCount == BallCount.eight?1000:*/500),
                   child: ball, );
               }),
             ),
@@ -221,7 +237,7 @@ class _FindBallGameState extends State<FindBallGame> {
 
     int shakeCount = _shuffleCount%5==0?5:_shuffleCount.isEven?2:1;
     shuffleBall(shakeCount,(){
-      Future.delayed(const Duration(milliseconds: 600),(){
+      Future.delayed(const Duration(milliseconds: /*gameSettings.ballCount == BallCount.eight?1000:*/600),(){
         _showNameOfBallToFind = true;
         setState((){});
       });

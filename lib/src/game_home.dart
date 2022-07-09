@@ -2,6 +2,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:gameplugin/gameplugin.dart';
 import 'package:gameplugin/src/assets/color_assets.dart';
 import 'package:gameplugin/src/blocs/ball_event_controller.dart';
 import 'package:gameplugin/src/blocs/restart_controller.dart';
@@ -10,6 +11,7 @@ import 'package:gameplugin/src/utils/dailog_utils.dart';
 import 'package:gameplugin/src/utils/pop_text_widget.dart';
 
 import 'games/find_ball_game.dart';
+import 'extensions/ball_count_extention.dart';
 
 
 class GameHome extends StatefulWidget {
@@ -79,9 +81,11 @@ class _GameHomeState extends State<GameHome> with TickerProviderStateMixin {
               //   ),
               // ),
 
-              FindBallGame(_gameSettings),
+              FindBallGame(_gameSettings,key: ValueKey(_gameSettings.ballCount.index),),
 
               restartButton(),
+
+              switchGameButton(),
 
               quitButton(),
 
@@ -120,6 +124,40 @@ class _GameHomeState extends State<GameHome> with TickerProviderStateMixin {
         ),
       ),);
 }
+
+  Widget switchGameButton(){
+    return Align(alignment: Alignment.topRight,
+      child: SafeArea(
+        child: Container(
+          width: 40,height: 40,
+          margin: const EdgeInsets.only(top: 20,right: 80),
+          child: ElevatedButton(
+            onPressed: ()async{
+              List<BallCount> balls = BallCount.values.toList();
+              List items = List.generate(balls.length, (index) => "${balls[index].getValue} Ball Game");
+             showListDialog(context, items, (i){
+               BallCount ballCount = balls[i];
+               _gameSettings = GameSettings(gameSpeed: _gameSettings.gameSpeed,ballShape: _gameSettings.ballShape,
+                 ballCount: ballCount,ballSize: _gameSettings.ballSize);
+               setState(() {});
+             },returnIndex: true);
+            },
+            style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.all(0),
+                shape: CircleBorder(
+                    side: BorderSide(
+                        color: black.withOpacity(.1)
+                    )
+                ),
+                primary: default_white
+            ),
+            child: const Icon(Icons.unfold_more,
+              color: black,),
+          ),
+        ),
+      ),);
+  }
+
 
  Widget quitButton(){
 
