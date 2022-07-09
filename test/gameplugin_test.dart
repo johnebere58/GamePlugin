@@ -13,7 +13,7 @@ void main(){
 
       GameSettings gameSettings = GameSettings(ballCount: BallCount.three);
 
-      expect(gameSettings.ballCount.getValue, 4);
+      expect(gameSettings.ballCount.getValue, 3);
 
     });
   });

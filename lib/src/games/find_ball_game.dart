@@ -58,9 +58,9 @@ class _FindBallGameState extends State<FindBallGame> {
        });
     }));
 
-    // Future.delayed(const Duration(milliseconds: 500),(){
-    //   RestartController.instance.restartGame();
-    // });
+    Future.delayed(const Duration(milliseconds: 500),(){
+      RestartController.instance.restartGame();
+    });
     super.initState();
   }
 

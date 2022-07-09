@@ -16,9 +16,22 @@ void main(){
       BallCount ballCount = BallCount.four;
       GameSettings gameSettings = GameSettings(ballCount: ballCount);
       await tester.pumpWidget(MaterialApp(home: GameHome(gameSettings)));
-      await tester.pumpAndSettle(const Duration(seconds: 1));
+      await tester.pumpAndSettle(const Duration(seconds: 4));
       for(int i=0;i<ballCount.getValue;i++){
-        expect(find.byKey(ValueKey(i)), findsOneWidget);
+        expect(find.byKey(ValueKey(i)), findsWidgets);
+      }
+
+
+    });
+    
+    testWidgets("Test if balls are shuffling", (tester)async{
+
+      BallCount ballCount = BallCount.four;
+      GameSettings gameSettings = GameSettings(ballCount: ballCount);
+      await tester.pumpWidget(MaterialApp(home: GameHome(gameSettings)));
+      await tester.pumpAndSettle(const Duration(seconds: 4));
+      for(int i=0;i<ballCount.getValue;i++){
+        expect(find.byKey(ValueKey(i)), findsWidgets);
       }
     });
   });
