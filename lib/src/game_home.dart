@@ -3,12 +3,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:gameplugin/src/assets/color_assets.dart';
+import 'package:gameplugin/src/blocs/ball_event_controller.dart';
 import 'package:gameplugin/src/blocs/restart_controller.dart';
 import 'package:gameplugin/src/settings/game_settings.dart';
 import 'package:gameplugin/src/utils/dailog_utils.dart';
 import 'package:gameplugin/src/utils/pop_text_widget.dart';
 
-import 'blocs/ball_controller.dart';
 import 'games/find_ball_game.dart';
 
 
@@ -47,7 +47,6 @@ class _GameHomeState extends State<GameHome> with TickerProviderStateMixin {
         }
     );
 
-
   }
 
 
@@ -66,30 +65,32 @@ class _GameHomeState extends State<GameHome> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: white,
-      child: Stack(fit: StackFit.expand,
-          children:
-          [
-            // LiquidLinearProgressIndicator(direction: Axis.vertical,
-            //   backgroundColor: transparent,
-            //   value: _animationController.value,valueColor
-            //       : AlwaysStoppedAnimation<Color>(
-            //       default_white
-            //   ),
-            // ),
+    return Scaffold(
+      body: Container(
+        color: white,
+        child: Stack(//fit: StackFit.expand,
+            children:
+            [
+              // LiquidLinearProgressIndicator(direction: Axis.vertical,
+              //   backgroundColor: transparent,
+              //   value: _animationController.value,valueColor
+              //       : AlwaysStoppedAnimation<Color>(
+              //       default_white
+              //   ),
+              // ),
 
-            FindBallGame(_gameSettings),
+              FindBallGame(_gameSettings),
 
-            restartButton(),
+              restartButton(),
 
-            quitButton(),
+              quitButton(),
 
-            const PopTextWidget(),
+              const PopTextWidget(),
 
 
-          ]
+            ]
 
+        ),
       ),
     );
   }
@@ -134,7 +135,7 @@ class _GameHomeState extends State<GameHome> with TickerProviderStateMixin {
               });
             },
             style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.all(0),
+                padding: const EdgeInsets.all(0),
                 shape: CircleBorder(
                     side: BorderSide(
                         color: black.withOpacity(.1)

@@ -27,10 +27,9 @@ class _FindBallGameState extends State<FindBallGame> {
 
   final List<StreamSubscription> _streamSubscriptions = [];
   final BallEventController _ballEventController = BallEventController.instance;
-  late List<Widget> _balls;
+  final List<Widget> _balls = [];
   late List _ballIds;
-  late GameSettings _gameSettings;
-  late double _screenSize;
+  late GameSettings gameSettings;
   int _ballIndexToFind = -1;
   bool _showNameOfBallToFind = false;
   int _shuffleCount = 0;
@@ -38,9 +37,8 @@ class _FindBallGameState extends State<FindBallGame> {
 
   @override
   void initState() {
-    _allBalls = BallAssets(_gameSettings).getAllBalls();
-    _screenSize = getScreenHeight(context)/3.5;
-    _gameSettings = widget.gameSettings;
+    gameSettings = widget.gameSettings;
+    _allBalls = BallAssets(gameSettings).getAllBalls();
     createBalls();
     _streamSubscriptions.add(RestartController.instance.stream.listen((bool afresh) {
          Future.delayed(const Duration(seconds: 1),(){
@@ -59,7 +57,7 @@ class _FindBallGameState extends State<FindBallGame> {
   }
 
   void createBalls(){
-    _ballIds = List.generate(_gameSettings.ballCount.getValue, (index) => index);
+    _ballIds = List.generate(gameSettings.ballCount.getValue, (index) => index);
 
     for(int i in _ballIds){
       var key = ValueKey(i);
@@ -75,49 +73,107 @@ class _FindBallGameState extends State<FindBallGame> {
     // });
   }
 
+  double get _screenSize => getScreenHeight(context)/
+      (gameSettings.ballCount==BallCount.eight?(2.5):3.5);
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        SizedBox(
-          width: _screenSize,
-          height: _screenSize,
-          child: Stack(
-            children: List.generate(_ballIds.length, (index) {
-              Widget ball = _balls[index];
-              var key = ball.key;
-              Alignment alignment = getAlignment(key);
-              return AnimatedAlign(
-                alignment: alignment,
-                duration: const Duration(milliseconds: 500),
-                child: Container(
-                  margin: EdgeInsets.all(getOffset(key)),
-                  child: ball,
-                ), );
-            }),
-          ),
-        ),
 
-        ballToFindTextWidget()
-      ],
+    return Center(
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          SizedBox(
+            width: _screenSize,
+            height: _screenSize,
+            child: Stack(
+              children: List.generate(_ballIds.length, (index) {
+                Widget ball = _balls[index];
+                var key = ball.key;
+                // Alignment alignment = getAlignment(key);
+                return AnimatedPositioned(
+                  // alignment: alignment,
+                  top: getTop(key),left:getLeft(key),
+                  duration: const Duration(milliseconds: 500),
+                  child: ball, );
+              }),
+            ),
+          ),
+
+          ballToFindTextWidget()
+        ],
+      ),
     );
   }
 
-  Alignment getAlignment(var key){
+  double getTop(var key){
     int itemId =( key as ValueKey).value;
     int position = _ballIds.indexOf(itemId);
-    if(_gameSettings.ballCount == BallCount.two){
+
+    int ballCount = gameSettings.ballCount.getValue;
+    double halfBall = gameSettings.ballSize/2;
+    if(ballCount==2){
+      if(position == 0) return _screenSize/2 - (halfBall);
+      if(position == 1) return _screenSize/2 - (halfBall);
+    }
+
+    if(ballCount==3){
+      if(position == 0) return 0;
+      if(position == 1) return _screenSize - (halfBall);
+      if(position == 2) return _screenSize - (halfBall);
+    }
+
+    if(ballCount==4){
+      if(position == 0) return 0;
+      if(position == 1) return _screenSize/2 - (halfBall);
+      if(position == 2) return _screenSize/2 - (halfBall);
+      if(position == 3) return _screenSize - (halfBall);
+    }
+
+    return 0;
+  }
+
+  double getLeft(var key){
+    int itemId =( key as ValueKey).value;
+    int position = _ballIds.indexOf(itemId);
+
+    int ballCount = gameSettings.ballCount.getValue;
+    double ballSize = gameSettings.ballSize;
+    double halfBall = gameSettings.ballSize/2;
+    if(ballCount==2){
+      if(position == 0) return 0;
+      if(position == 1) return _screenSize - (ballSize);
+    }
+
+    if(ballCount==3){
+      if(position == 0) return _screenSize/2;
+      if(position == 1) return 0;
+      if(position == 2) return _screenSize;
+    }
+
+    if(ballCount==4){
+      if(position == 0) return _screenSize/2;
+      if(position == 1) return 0;
+      if(position == 2) return _screenSize;
+      if(position == 3) return _screenSize/2;
+    }
+
+    return 0;
+  }
+
+/*  Alignment getAlignment(var key){
+    int itemId =( key as ValueKey).value;
+    int position = _ballIds.indexOf(itemId);
+    if(gameSettings.ballCount == BallCount.two){
       if(position==0)return Alignment.centerRight;
       if(position==1)return Alignment.centerLeft;
     }
-    if(_gameSettings.ballCount == BallCount.three){
+    if(gameSettings.ballCount == BallCount.three){
       if(position==0)return Alignment.topCenter;
       if(position==1)return Alignment.bottomRight;
       if(position==2)return Alignment.bottomLeft;
     }
-    if(_gameSettings.ballCount == BallCount.four){
+    if(gameSettings.ballCount == BallCount.four){
       if(position==0)return Alignment.topCenter;
       if(position==1)return Alignment.centerLeft;
       if(position==2)return Alignment.centerRight;
@@ -139,12 +195,12 @@ class _FindBallGameState extends State<FindBallGame> {
     int itemId =( key as ValueKey).value;
     int position = _ballIds.indexOf(itemId);
 
-    if(position<5)return 0;
+    if(position<4)return 0;
 
     double offset = _screenSize/5;
 
     return offset;
-  }
+  }*/
 
 
   startShuffle()async{
@@ -186,16 +242,14 @@ class _FindBallGameState extends State<FindBallGame> {
 
   Widget ballToFindTextWidget(){
 
-    return Container(
-        margin: const EdgeInsets.only(top: 10),
-        child: AnimatedOpacity(
-          duration: const Duration(milliseconds: 500),
-          opacity: !_showNameOfBallToFind? 0:1,
-          child: Text(_ballIndexToFind==-1?"":_allBalls[_ballIndexToFind].ballName,
-            style: textStyle(true, 30,
-              _ballIndexToFind==-1?Colors.transparent:
-              _allBalls[_ballIndexToFind].ballColor,
-              shadowOffset: .1,withShadow: true,),),
-        ));
+    return AnimatedOpacity(
+      duration: const Duration(milliseconds: 500),
+      opacity: !_showNameOfBallToFind? 0:1,
+      child: Text(_ballIndexToFind==-1?"":_allBalls[_ballIndexToFind].ballName,
+        style: textStyle(true, 30,
+          _ballIndexToFind==-1?Colors.transparent:
+          _allBalls[_ballIndexToFind].ballColor,
+          shadowOffset: .1,withShadow: true,),),
+    );
   }
 }

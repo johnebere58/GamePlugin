@@ -6,22 +6,21 @@ import 'package:gameplugin/src/utils/widget_utils.dart';
 import '../gameplugin.dart';
 import 'repository/repository.dart';
 import 'settings/game_settings.dart';
-import 'settings/game_settings.dart';
 
 class GameManager{
 
    static bool initialized = false;
-   static late GameSettings _gameSettings;
+   late GameSettings _gameSettings;
 
-   static initialize({required GameSettings gameSettings}){
-     _gameSettings = gameSettings;
+   static initialize(){
      if(!initialized) {
        Repository.startUp();
        initialized = true;
      }
    }
 
-   static void launchGame(BuildContext context){
+   void launchGame(BuildContext context,{required GameSettings gameSettings}){
+     _gameSettings = gameSettings;
      if(!initialized){
        throw Exception("game not initialized, please call [GameManager.initialize] first");
      }

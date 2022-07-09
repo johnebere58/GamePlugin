@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:gameplugin/src/utils/screen_utils.dart';
 import 'package:gameplugin/src/utils/widget_utils.dart';
 
@@ -106,7 +105,7 @@ class _MessageDialogState extends State<MessageDialog> {
                     children: [
                       Container(
                           padding: EdgeInsets.all(
-                              widget.iconPadding ?? 0),
+                              widget.iconPadding),
                           decoration: const BoxDecoration(
                             shape: BoxShape.circle,
                           ),
@@ -132,7 +131,7 @@ class _MessageDialogState extends State<MessageDialog> {
                       if(message.isNotEmpty)Flexible(
                         child: SingleChildScrollView(
                           child: Text(
-                            "$message",
+                            message,
                             style: textStyle(false, 16, Colors.black.withOpacity(.5)),
                             textAlign: TextAlign.center,
 //                                    maxLines: 1,
@@ -155,11 +154,12 @@ class _MessageDialogState extends State<MessageDialog> {
                       Container(
 //                              height: 50,
                         margin: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                        child: FlatButton(
-                            materialTapTargetSize:
-                            MaterialTapTargetSize.shrinkWrap,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25)),
+                        child: TextButton(
+                            style: TextButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(25)),
+                                padding: const EdgeInsets.fromLTRB(15, 0, 15, 0)
+                            ),
                             // color: blue0,
                             onPressed: () {
                               closePage(() async {

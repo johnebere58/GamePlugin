@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:gameplugin/src/blocs/pop_single_text_controller.dart';
 import 'package:gameplugin/src/settings/text_data.dart';
@@ -15,7 +14,7 @@ class PopTextWidget extends StatefulWidget {
  class _PopTextWidgetState extends State<PopTextWidget> {
 
    final List<StreamSubscription> _streamSubscriptions = [];
-   late TextData? _textData;
+   TextData? _textData;
   @override
   void initState() {
     _streamSubscriptions.add(
@@ -49,9 +48,10 @@ class PopTextWidget extends StatefulWidget {
 
      return AnimatedPositioned(
        duration: const Duration(milliseconds: 500),
-       top: _textData!=null?60:-60,left: (getScreenWidth(context)/2 -150),child:
-       SizedBox(width: 300,height: 100,
-       child: Text(_textData!.text,
+       top: _textData!=null?60:-60,
+       left: (getScreenWidth(context)/2 -150),
+       child: SizedBox(width: 300,height: 100,
+       child: _textData==null?Container():Text(_textData!.text,
            style: textStyle(true, 40, _textData!.textColor,withShadow: true,),textAlign: TextAlign.center),
      ),
      );
