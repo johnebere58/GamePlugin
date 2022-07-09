@@ -60,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: TextButton(
           onPressed: (){
             GameManager().launchGame(context,
-                gameSettings: GameSettings(ballCount: BallCount.two,
+                gameSettings: GameSettings(ballCount: BallCount.eight,
                     gameSpeed: GameSpeed.normal,
                     ballShape: BallShape.circle));
           },

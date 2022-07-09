@@ -111,6 +111,7 @@ class _FindBallGameState extends State<FindBallGame> {
     int position = _ballIds.indexOf(itemId);
 
     int ballCount = gameSettings.ballCount.getValue;
+    double ballSize = gameSettings.ballSize;
     double halfBall = gameSettings.ballSize/2;
     if(ballCount==2){
       if(position == 0) return _screenSize/2 - (halfBall);
@@ -119,17 +120,19 @@ class _FindBallGameState extends State<FindBallGame> {
 
     if(ballCount==3){
       if(position == 0) return 0;
-      if(position == 1) return _screenSize - (halfBall);
-      if(position == 2) return _screenSize - (halfBall);
+      if(position == 1) return _screenSize - (ballSize);
+      if(position == 2) return _screenSize - (ballSize);
     }
 
-    if(ballCount==4){
-      if(position == 0) return 0;
-      if(position == 1) return _screenSize/2 - (halfBall);
-      if(position == 2) return _screenSize/2 - (halfBall);
-      if(position == 3) return _screenSize - (halfBall);
-    }
-
+    double offset = _screenSize/5;
+    if(position == 0) return 0;
+    if(position == 1) return _screenSize/2 - (halfBall);
+    if(position == 2) return _screenSize/2 - (halfBall);
+    if(position == 3) return _screenSize - (ballSize);
+    if(position == 4) return 0 + (offset);
+    if(position == 5) return 0 + (offset);
+    if(position == 6) return _screenSize - (offset) - ballSize;
+    if(position == 7) return _screenSize - (offset) - ballSize;
     return 0;
   }
 
@@ -146,18 +149,20 @@ class _FindBallGameState extends State<FindBallGame> {
     }
 
     if(ballCount==3){
-      if(position == 0) return _screenSize/2;
+      if(position == 0) return _screenSize/2 - (halfBall);
       if(position == 1) return 0;
-      if(position == 2) return _screenSize;
+      if(position == 2) return _screenSize - (ballSize);
     }
 
-    if(ballCount==4){
-      if(position == 0) return _screenSize/2;
-      if(position == 1) return 0;
-      if(position == 2) return _screenSize;
-      if(position == 3) return _screenSize/2;
-    }
-
+    double offset = _screenSize/5;
+    if(position == 0) return _screenSize/2 - halfBall;
+    if(position == 1) return 0;
+    if(position == 2) return _screenSize - ballSize;
+    if(position == 3) return _screenSize/2 - halfBall;
+    if(position == 4) return 0 + offset;
+    if(position == 5) return _screenSize - offset - ballSize;
+    if(position == 6) return 0 + offset;
+    if(position == 7) return _screenSize - offset -ballSize;
     return 0;
   }
 
