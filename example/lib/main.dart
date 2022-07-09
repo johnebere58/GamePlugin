@@ -62,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
             GameManager().launchGame(context,
                 gameSettings: GameSettings(ballCount: BallCount.four,
                     gameSpeed: GameSpeed.normal,
-                    ballShape: BallShape.circle));
+                    ballShape: BallShape.square));
           },
           child: const Text("Play Game"),
         ),

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:gameplugin/gameplugin.dart';
 import 'package:gameplugin/src/blocs/ball_controller.dart';
 import 'package:gameplugin/src/blocs/ball_event_controller.dart';
 import 'package:gameplugin/src/settings/ball_events.dart';
@@ -51,6 +52,7 @@ class _BallWidgetState extends State<BallWidget> {
   @override
   Widget build(BuildContext context) {
     Color color = _ballInfo!.ballColor;
+    BallShape ballShape = _ballInfo!.ballShape;
     return GestureDetector(
       key: widget.key,
       onTap: () {
@@ -69,6 +71,16 @@ class _BallWidgetState extends State<BallWidget> {
             margin: EdgeInsets.zero,
             shape:
 
+                ballShape == BallShape.square?
+               RoundedRectangleBorder(
+                 borderRadius: BorderRadius.circular(5),
+                   side: BorderSide(
+                       color: !_hideBall ? Colors.transparent : Colors.black
+                           .withOpacity(.4),
+                       width: 2
+                   )
+               )
+              :
             CircleBorder(
                 side: BorderSide(
                     color: !_hideBall ? Colors.transparent : Colors.black
