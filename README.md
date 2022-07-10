@@ -3,7 +3,7 @@
 A simple library to add simple fun games to your app
 
 <p>
-    <img src="https://github.com/johnebere58/gameplugin/blob/master/screenshots/demo1.gif" width="200px" height="auto" hspace="20"/>
+    <img src="https://github.com/johnebere58/gameplugin/blob/master/screenshots/demo1.gif" width="auto" height="200px" hspace="20"/>
     <img src="https://github.com/johnebere58/gameplugin/blob/master/screenshots/sample1.png" width="200px" height="auto" hspace="20"/>
     <img src="https://github.com/johnebere58/gameplugin/blob/master/screenshots/sample2.png" width="200px" height="auto" hspace="20"/>
     <img src="https://github.com/johnebere58/gameplugin/blob/master/screenshots/sample3.png" width="200px" height="auto" hspace="20"/>
