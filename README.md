@@ -1,9 +1,54 @@
-# GamePlugin: Add simple games to your app
+# gameplugin
 
-[![build status](https://github.com/johnebere58/gameplugin/tree/master/.github/workflows)](https://github.com/johnebere58/gameplugin/tree/master/.github/workflows)
-[![Coverage Status](https://coveralls.io/repos/github/johnebere58/gameplugin/badge.svg)](https://coveralls.io/github/johnebere58/gameplugin)
+A simple library to add simple fun games to your app
 
-A Game Plugin
+<p>
+    <img src="https://github.com/johnebere58/screenshots/demo1.gif" width="200px" height="auto" hspace="20"/>
+    <img src="https://github.com/johnebere58/screenshots/sample1.png" width="200px" height="auto" hspace="20"/>
+    <img src="https://github.com/johnebere58/screenshots/sample2.png" width="200px" height="auto" hspace="20"/>
+    <img src="https://github.com/johnebere58/screenshots/sample3.png" width="200px" height="auto" hspace="20"/>
+   </p>
+
+- [x] 2 Ball Game
+- [x] 3 Ball Game
+- [x] 4 Ball Game
+- [x] 8 Ball Game
+
+## Installation
+To use this plugin, add `gameplugin` as a dependency in your pubspec.yaml file.
+
+## Get Started
+
+Add this following to the `initState` method of your widget
+Instantiate the game instance by call `GameManager.initialize()`
+```
+  @override
+  void initState() {
+    GameManager.initialize();
+    super.initState();
+  }
+```
+
+Then commence the game by calling
+```
+  GameManager().launchGame(context,);
+```
+
+## Optional
+
+You can choose to launch game with custom settings by adding `gameSettings`
+```
+  GameManager()
+        .launchGame(context,
+                gameSettings: GameSettings(
+                  ballCount: BallCount.four,
+                  ballShape: BallShape.circle,
+                  ballSize: 50.0,
+                  gameSpeed: GameSpeed.normal
+                ));
+```
+
+[![Buy Me A Coffee](https://bmc-cdn.nyc3.digitaloceanspaces.com/BMC-button-images/custom_images/orange_img.png "Buy Me A Coffee")](https://www.buymeacoffee.com/johnebere58 "Buy Me A Coffee")
 
 ## Getting Started
  
