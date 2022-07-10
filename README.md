@@ -1,5 +1,7 @@
 # gameplugin
 
+[![CI](https://github.com/johnebere58/gameplugin/actions/workflows/main.yml/badge.svg)](https://github.com/johnebere58/gameplugin/actions/workflows/main.yml)
+
 A simple library to add simple fun games to your app
 
 <p>
