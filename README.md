@@ -1,7 +1,7 @@
 # GamePlugin: Add simple games to your app
 
 [![build status](https://github.com/johnebere58/gameplugin/tree/master/.github/workflows)](https://github.com/johnebere58/gameplugin/tree/master/.github/workflows)
-[![Coverage Status](https://coveralls.io/repos/github/johnebere58/gameplugin/badge.svg)](https://coveralls.io/github/johnebere58/gameplugin?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/johnebere58/gameplugin/badge.svg)](https://coveralls.io/github/johnebere58/gameplugin)
 
 A Game Plugin
 
