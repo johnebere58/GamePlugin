@@ -10,8 +10,8 @@ import 'models/game_settings.dart';
 class GameManager{
 
    static bool initialized = false;
-   late GameSettings _gameSettings;
 
+   ///very important please call this method first
    static initialize(){
      if(!initialized) {
        Repository.startUp();
@@ -19,21 +19,13 @@ class GameManager{
      }
    }
 
-   void launchGame(BuildContext context,{required GameSettings gameSettings}){
-     _gameSettings = gameSettings;
+   void launchGame(BuildContext context,{GameSettings? gameSettings}){
+     //uses default game settings if no settings was added
+     gameSettings = gameSettings ?? GameSettings();
      if(!initialized){
        throw Exception("game not initialized, please call [GameManager.initialize] first");
      }
-     launchNewScreen(context, GameHome(_gameSettings));
+     launchNewScreen(context, GameHome(gameSettings));
    }
 
-   ThemeData _getTheme(BuildContext context){
-      return Theme.of(context).copyWith(
-       textTheme: const TextTheme(
-        headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
-        headline6: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
-        bodyText2: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
-       )
-      );
-   }
  }

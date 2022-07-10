@@ -59,10 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // in the middle of the parent.
         child: TextButton(
           onPressed: (){
-            GameManager().launchGame(context,
-                gameSettings: GameSettings(ballCount: BallCount.four,
-                    gameSpeed: GameSpeed.normal,
-                    ballShape: BallShape.square));
+            GameManager().launchGame(context,);
           },
           child: const Text("Play Game"),
         ),
