@@ -19,6 +19,17 @@ A simple library to add simple fun games to your app
 ## Installation
 To use this plugin, add `gameplugin` as a dependency in your pubspec.yaml file.
 
+```
+dependencies:
+flutter:
+sdk: flutter
+
+gameplugin:
+git:
+url: git://github.com/johnebere58/gameplugin.git
+ref: master # branch name
+```
+
 ## Get Started
 
 Add this following to the `initState` method of your widget
