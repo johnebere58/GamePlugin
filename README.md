@@ -3,7 +3,7 @@
 [![CI](https://github.com/johnebere58/gameplugin/actions/workflows/main.yml/badge.svg)](https://github.com/johnebere58/gameplugin/actions/workflows/main.yml)
 
 A simple library to add simple fun games to your app
-
+ 
 <p>
     <img src="https://github.com/johnebere58/gameplugin/blob/master/screenshots/demo1.gif" width="200px" height="400px" hspace="20"/>
     <img src="https://github.com/johnebere58/gameplugin/blob/master/screenshots/sample1.png" width="200px" height="400px" hspace="20"/>
