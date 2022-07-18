@@ -1,4 +1,4 @@
-# gameplugin
+# Game Plugin
 
 [![CI](https://github.com/johnebere58/gameplugin/actions/workflows/main.yml/badge.svg)](https://github.com/johnebere58/gameplugin/actions/workflows/main.yml)
 
@@ -21,13 +21,14 @@ To use this plugin, add `gameplugin` as a dependency in your pubspec.yaml file.
 
 ```
 dependencies:
-flutter:
-sdk: flutter
+  flutter:
+    sdk: flutter
 
 gameplugin:
-git:
-url: git://github.com/johnebere58/gameplugin.git
-ref: master # branch name
+  git:
+    url: git://github.com/johnebere58/gameplugin.git
+    ref: master # branch name
+
 ```
 
 ## Get Started
