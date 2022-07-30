@@ -46,8 +46,11 @@ class _FindBallGameState extends State<FindBallGame> {
     _streamSubscriptions.add(RestartController.instance.stream.listen((bool afresh) {
       startShuffle();
     }));
-    _streamSubscriptions.add(BallController.instance.stream.listen((BallInfo ballInfo) {
-       if(ballInfo.ballId == _ballIndexToFind){
+    _streamSubscriptions.add(BallController.instance.stream.listen((BallInfo? ballInfo) {
+      if(ballInfo==null)return;
+      if(_ballIndexToFind==-1)return;
+
+      if(ballInfo.ballId == _ballIndexToFind){
          PopSingleTextController.instance.popCorrect();
        }else{
          PopSingleTextController.instance.popWrong();
@@ -267,10 +270,10 @@ class _FindBallGameState extends State<FindBallGame> {
       duration: const Duration(milliseconds: 500),
       opacity: !_showNameOfBallToFind? 0:1,
       child: Text(_ballIndexToFind==-1?"":_allBalls[_ballIndexToFind].ballName,
-        style: textStyle(true, 30,
+        style: textStyle(true, 20,
           _ballIndexToFind==-1?Colors.transparent:
           _allBalls[_ballIndexToFind].ballColor,
-          shadowOffset: .1,withShadow: true,),),
+          ),),
     );
   }
 }

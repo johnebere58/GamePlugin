@@ -8,7 +8,8 @@ import 'package:gameplugin/src/blocs/ball_event_controller.dart';
 import 'package:gameplugin/src/blocs/restart_controller.dart';
 import 'package:gameplugin/src/models/game_settings.dart';
 import 'package:gameplugin/src/utils/dailog_utils.dart';
-import 'package:gameplugin/src/utils/pop_text_widget.dart';
+import 'package:gameplugin/src/utils/widget_utils.dart';
+import 'package:gameplugin/src/widgets/pop_text_widget.dart';
 
 import 'games/find_ball_game.dart';
 import 'extensions/ball_count_extention.dart';
@@ -91,7 +92,7 @@ class _GameHomeState extends State<GameHome> with TickerProviderStateMixin {
 
               const PopTextWidget(),
 
-
+              scoreBoard()
             ]
 
         ),
@@ -104,19 +105,20 @@ class _GameHomeState extends State<GameHome> with TickerProviderStateMixin {
       child: SafeArea(
         child: Container(
           width: 40,height: 40,
-          margin: const EdgeInsets.only(top: 20,right: 20),
+          margin: const EdgeInsets.only(top: 20,right: 20,bottom: 20),
           child: ElevatedButton(
             onPressed: ()async{
               RestartController.instance.restartGame();
             },
             style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.all(0),
-                shape: CircleBorder(
+                shape:  CircleBorder(
                     side: BorderSide(
-                        color: black.withOpacity(.1)
+                        color: black.withOpacity(.1),width: 1
                     )
                 ),
-                primary: default_white
+                elevation: 5,shadowColor: black.withOpacity(.1),
+                primary: white
             ),
             child: const Icon(Icons.refresh,
               color: black,),
@@ -130,7 +132,7 @@ class _GameHomeState extends State<GameHome> with TickerProviderStateMixin {
       child: SafeArea(
         child: Container(
           width: 40,height: 40,
-          margin: const EdgeInsets.only(top: 20,right: 80),
+          margin: const EdgeInsets.only(top: 20,right: 80,bottom: 20),
           child: ElevatedButton(
             onPressed: ()async{
               List<BallCount> balls = BallCount.values.toList();
@@ -144,12 +146,13 @@ class _GameHomeState extends State<GameHome> with TickerProviderStateMixin {
             },
             style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.all(0),
-                shape: CircleBorder(
-                    side: BorderSide(
-                        color: black.withOpacity(.1)
-                    )
+                shape:  CircleBorder(
+                  side: BorderSide(
+                    color: black.withOpacity(.1),width: 1
+                  )
                 ),
-                primary: default_white
+                elevation: 5,shadowColor: black.withOpacity(.1),
+                primary: white
             ),
             child: const Icon(Icons.unfold_more,
               color: black,),
@@ -164,27 +167,93 @@ class _GameHomeState extends State<GameHome> with TickerProviderStateMixin {
     return Align(alignment: Alignment.topLeft,
       child: SafeArea(
         child: Container(
-          width: 40,height: 40,
-          margin: const EdgeInsets.only(top: 20,left: 20),
-          child: ElevatedButton(
-            onPressed: ()async{
-              yesNoDialog(context, "Quit Game", "Are you sure?", (){
-                Navigator.pop(context,false);
-              });
-            },
-            style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.all(0),
-                shape: CircleBorder(
-                    side: BorderSide(
-                        color: black.withOpacity(.1)
-                    )
-                ),
-                primary: default_white
+          margin: const EdgeInsets.only(top: 20,left: 20,right: 20),
+          child: SizedBox(
+            width: 40,height: 40,
+            child: ElevatedButton(
+              onPressed: ()async{
+                yesNoDialog(context, "Quit Game", "Are you sure?", (){
+                  Navigator.pop(context,false);
+                });
+              },
+              style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.all(0),
+                  shape:  CircleBorder(
+                      side: BorderSide(
+                          color: black.withOpacity(.1),width: 1
+                      )
+                  ),
+                  elevation: 5,shadowColor: black.withOpacity(.1),
+                  primary: white
+              ),
+              child: const Icon(Icons.close,
+                color: black,),
             ),
-            child: const Icon(Icons.close,
-              color: black,),
           ),
         ),
       ),);
+}
+
+Widget scoreBoard(){
+
+    return Align(alignment: Alignment.bottomRight,
+      child: Container(
+        margin: EdgeInsets.all(20),
+        width: double.infinity,
+        // height: 100,
+        padding: const EdgeInsets.all(5),
+        decoration: BoxDecoration(
+            color: default_white,
+            borderRadius: BorderRadius.circular(10)
+        ),
+        child: Row(
+          children: [
+            Flexible(fit: FlexFit.tight,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text("Score",style: textStyle(true, 14, black),),
+                  // addLine(.5, black.withOpacity(.1), 0, 5, 0, 5),
+                  addSpace(5),
+                  Text("10",style: textStyle(false, 14, black.withOpacity(.5)),),
+                ],
+              ),
+            ),
+            Container(
+              color: black.withOpacity(.1),width: .5,
+              height: 50,
+            ),
+            Flexible(fit: FlexFit.tight,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text("Round",style: textStyle(true, 14, black),),
+                  // addLine(.5, black.withOpacity(.1), 0, 5, 0, 5),
+                  addSpace(5),
+                  Text("1/10",style: textStyle(false, 14, black.withOpacity(.5)),),
+                ],
+              ),
+            ),
+            Container(
+              color: black.withOpacity(.1),width: .5,
+              height: 50,
+            ),
+            Flexible(fit: FlexFit.tight,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text("Difficulty",style: textStyle(true, 14, black),),
+                  // addLine(.5, black.withOpacity(.1), 0, 5, 0, 5),
+                  addSpace(5),
+                  Text("Easy",style: textStyle(false, 14, black.withOpacity(.5)),),
+                ],
+              ),
+            ),
+
+
+          ],
+        ),
+      ),
+    );
 }
 }
