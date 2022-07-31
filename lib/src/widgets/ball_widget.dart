@@ -53,33 +53,38 @@ class _BallWidgetState extends State<BallWidget> {
   Widget build(BuildContext context) {
     Color color = _ballInfo!.ballColor;
     BallShape ballShape = _ballInfo!.ballShape;
-    return SizedBox(
-        width: _ballInfo!.ballSize,
-        height: _ballInfo!.ballSize,
-        child: Card(
-          margin: EdgeInsets.zero,
-          shape:
+    return GestureDetector(
+      onTap: (){
+        _ballController.ballTapped(_ballInfo);
+      },
+      child: SizedBox(
+          width: _ballInfo!.ballSize,
+          height: _ballInfo!.ballSize,
+          child: Card(
+            margin: EdgeInsets.zero,
+            shape:
 
-              ballShape == BallShape.square?
-             RoundedRectangleBorder(
-               borderRadius: BorderRadius.circular(5),
-                 side: BorderSide(
-                     color: !_hideBall ? Colors.transparent : Colors.black
-                         .withOpacity(.4),
-                     width: 2
-                 )
-             )
-            :
-          CircleBorder(
-              side: BorderSide(
-                  color: !_hideBall ? Colors.transparent : Colors.black
-                      .withOpacity(.4),
-                  width: 2
-              )
-          ),
-          color: _hideBall ? Colors.white : color,
-          elevation: 10,
-          shadowColor: Colors.black.withOpacity(.3),
-        ));
+                ballShape == BallShape.square?
+               RoundedRectangleBorder(
+                 borderRadius: BorderRadius.circular(5),
+                   side: BorderSide(
+                       color: !_hideBall ? Colors.transparent : Colors.black
+                           .withOpacity(.4),
+                       width: 2
+                   )
+               )
+              :
+            CircleBorder(
+                side: BorderSide(
+                    color: !_hideBall ? Colors.transparent : Colors.black
+                        .withOpacity(.4),
+                    width: 2
+                )
+            ),
+            color: _hideBall ? Colors.white : color,
+            elevation: 10,
+            shadowColor: Colors.black.withOpacity(.3),
+          )),
+    );
   }
 }

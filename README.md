@@ -17,7 +17,7 @@ A simple library to add simple fun games to your app
 - [x] 8 Ball Game
 
 ## Installation
-To use this plugin, add `gameplugin` as a dependency in your pubspec.yaml file.
+To add this code snippet to your `pubspec.yaml` file.
 
 ```
 dependencies:

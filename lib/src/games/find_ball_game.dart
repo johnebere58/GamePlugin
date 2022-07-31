@@ -8,6 +8,7 @@ import 'package:gameplugin/src/blocs/ball_controller.dart';
 import 'package:gameplugin/src/blocs/pop_single_text_controller.dart';
 import 'package:gameplugin/src/blocs/restart_controller.dart';
 import 'package:gameplugin/src/models/ball_info.dart';
+import 'package:gameplugin/src/models/game_mode.dart';
 import 'package:gameplugin/src/utils/screen_utils.dart';
 import 'package:gameplugin/src/utils/widget_utils.dart';
 
@@ -16,6 +17,8 @@ import '../models/ball_count.dart';
 import '../models/game_settings.dart';
 import '../extensions/ball_count_extention.dart';
 import '../widgets/ball_widget.dart';
+import 'package:gameplugin/src/extensions/game_mode_extention.dart';
+import 'package:gameplugin/src/extensions/ball_count_extention.dart';
 
 class FindBallGame extends StatefulWidget {
 
@@ -37,30 +40,37 @@ class _FindBallGameState extends State<FindBallGame> {
   bool _showNameOfBallToFind = false;
   int _shuffleCount = 0;
   late List _allBalls;
+  late BallCount ballCount;
+  late GameMode gameMode;
 
   @override
   void initState() {
     gameSettings = widget.gameSettings;
+    gameMode = gameSettings.gameMode;
+    ballCount = gameMode.getBallCount;
     _allBalls = BallAssets(gameSettings).getAllBalls();
     createBalls();
     _streamSubscriptions.add(RestartController.instance.stream.listen((bool afresh) {
-      startShuffle();
+      startShuffle(afresh: afresh);
     }));
-    _streamSubscriptions.add(BallController.instance.stream.listen((BallInfo ballInfo) {
-       if(ballInfo.ballId == _ballIndexToFind){
+    _streamSubscriptions.add(BallController.instance.stream.listen((BallInfo? ballInfo) {
+      if(ballInfo==null)return;
+      if(_ballIndexToFind==-1)return;
+
+      if(ballInfo.ballId == _ballIndexToFind){
          PopSingleTextController.instance.popCorrect();
        }else{
          PopSingleTextController.instance.popWrong();
        }
 
        Future.delayed(const Duration(milliseconds: 1000),(){
-         RestartController.instance.restartGame();
+         RestartController.instance.restartGame(afresh: false);
        });
     }));
 
-    Future.delayed(const Duration(milliseconds: 500),(){
-      RestartController.instance.restartGame();
-    });
+    // Future.delayed(const Duration(milliseconds: 500),(){
+    //   RestartController.instance.restartGame();
+    // });
     super.initState();
   }
 
@@ -73,7 +83,8 @@ class _FindBallGameState extends State<FindBallGame> {
   }
 
   void createBalls(){
-    _ballIds = List.generate(gameSettings.ballCount.getValue, (index) => index);
+    _ballIds = List.generate(ballCount.getValue,
+            (index) => index);
 
     for(int i in _ballIds){
       var key = ValueKey(i);
@@ -90,7 +101,7 @@ class _FindBallGameState extends State<FindBallGame> {
   }
 
   double get _screenSize => getScreenHeight(context)/
-      (gameSettings.ballCount==BallCount.eight?(2.5):3.5);
+      (ballCount==BallCount.eight?(2.5):3.5);
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +121,7 @@ class _FindBallGameState extends State<FindBallGame> {
                 return AnimatedPositioned(
                   // alignment: alignment,
                   top: getTop(key),left:getLeft(key),
-                  duration: const Duration(milliseconds: /*gameSettings.ballCount == BallCount.eight?1000:*/500),
+                  duration: const Duration(milliseconds: /*ballCount == BallCount.eight?1000:*/500),
                   child: ball, );
               }),
             ),
@@ -126,15 +137,15 @@ class _FindBallGameState extends State<FindBallGame> {
     int itemId =( key as ValueKey).value;
     int position = _ballIds.indexOf(itemId);
 
-    int ballCount = gameSettings.ballCount.getValue;
+    int balls = ballCount.getValue;
     double ballSize = gameSettings.ballSize;
     double halfBall = gameSettings.ballSize/2;
-    if(ballCount==2){
+    if(balls==2){
       if(position == 0) return _screenSize/2 - (halfBall);
       if(position == 1) return _screenSize/2 - (halfBall);
     }
 
-    if(ballCount==3){
+    if(balls==3){
       if(position == 0) return 0;
       if(position == 1) return _screenSize - (ballSize);
       if(position == 2) return _screenSize - (ballSize);
@@ -156,15 +167,15 @@ class _FindBallGameState extends State<FindBallGame> {
     int itemId =( key as ValueKey).value;
     int position = _ballIds.indexOf(itemId);
 
-    int ballCount = gameSettings.ballCount.getValue;
+    int balls = ballCount.getValue;
     double ballSize = gameSettings.ballSize;
     double halfBall = gameSettings.ballSize/2;
-    if(ballCount==2){
+    if(balls==2){
       if(position == 0) return 0;
       if(position == 1) return _screenSize - (ballSize);
     }
 
-    if(ballCount==3){
+    if(balls==3){
       if(position == 0) return _screenSize/2 - (halfBall);
       if(position == 1) return 0;
       if(position == 2) return _screenSize - (ballSize);
@@ -185,16 +196,16 @@ class _FindBallGameState extends State<FindBallGame> {
 /*  Alignment getAlignment(var key){
     int itemId =( key as ValueKey).value;
     int position = _ballIds.indexOf(itemId);
-    if(gameSettings.ballCount == BallCount.two){
+    if(ballCount == BallCount.two){
       if(position==0)return Alignment.centerRight;
       if(position==1)return Alignment.centerLeft;
     }
-    if(gameSettings.ballCount == BallCount.three){
+    if(ballCount == BallCount.three){
       if(position==0)return Alignment.topCenter;
       if(position==1)return Alignment.bottomRight;
       if(position==2)return Alignment.bottomLeft;
     }
-    if(gameSettings.ballCount == BallCount.four){
+    if(ballCount == BallCount.four){
       if(position==0)return Alignment.topCenter;
       if(position==1)return Alignment.centerLeft;
       if(position==2)return Alignment.centerRight;
@@ -224,20 +235,20 @@ class _FindBallGameState extends State<FindBallGame> {
   }*/
 
 
-  startShuffle()async{
+  startShuffle({bool afresh=false})async{
     _showNameOfBallToFind = false;
     setState((){});
     _ballIndexToFind=-1;
 
     _ballEventController.showBall();
 
-    await Future.delayed(const Duration(milliseconds: 2000));
+    await Future.delayed( Duration(milliseconds: 2000+(afresh?2000:0)));
 
     _ballEventController.hideBall();
 
     int shakeCount = _shuffleCount%5==0?5:_shuffleCount.isEven?2:1;
     shuffleBall(shakeCount,(){
-      Future.delayed(const Duration(milliseconds: /*gameSettings.ballCount == BallCount.eight?1000:*/600),(){
+      Future.delayed(const Duration(milliseconds: /*ballCount == BallCount.eight?1000:*/600),(){
         _showNameOfBallToFind = true;
         setState((){});
       });
@@ -267,10 +278,10 @@ class _FindBallGameState extends State<FindBallGame> {
       duration: const Duration(milliseconds: 500),
       opacity: !_showNameOfBallToFind? 0:1,
       child: Text(_ballIndexToFind==-1?"":_allBalls[_ballIndexToFind].ballName,
-        style: textStyle(true, 30,
+        style: textStyle(true, 20,
           _ballIndexToFind==-1?Colors.transparent:
           _allBalls[_ballIndexToFind].ballColor,
-          shadowOffset: .1,withShadow: true,),),
+          ),),
     );
   }
 }
