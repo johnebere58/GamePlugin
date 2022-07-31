@@ -53,9 +53,6 @@ class _FindBallGameState extends State<FindBallGame> {
     createBalls();
     _streamSubscriptions.add(RestartController.instance.stream.listen((bool afresh) {
       startShuffle(afresh: afresh);
-      if(afresh){
-        EndGameController.instance.resetScore();
-      }
     }));
     _streamSubscriptions.add(BallController.instance.stream.listen((BallInfo? ballInfo) {
       if(ballInfo==null)return;
@@ -70,6 +67,12 @@ class _FindBallGameState extends State<FindBallGame> {
        }
       _ballIndexToFind=-1;
       if(mounted)setState(() {});
+
+      if(EndGameController.instance.rounds>=gameSettings.totalRound){
+        EndGameController.instance.endGame();
+        return;
+      }
+
        Future.delayed(const Duration(milliseconds: 1000),(){
          RestartController.instance.restartGame(afresh: false);
        });

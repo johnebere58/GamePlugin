@@ -14,12 +14,17 @@ class EndGameController {
 
   int _passed = 0;
   int _failed = 0;
+  int _rounds = 0;
+
+  int get rounds => _rounds;
 
   void increasePassed(){
     _passed++;
+    _rounds++;
   }
   void increaseFailed(){
     _failed++;
+    _rounds++;
   }
 
   void endGame() {
@@ -29,6 +34,7 @@ class EndGameController {
   void resetScore(){
     _passed = 0;
     _failed = 0;
+    _rounds = 0;
   }
 
  }

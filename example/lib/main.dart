@@ -47,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
             GameManager().launchGame(context,
                 gameSettings: GameSettings(
                   ballShape: BallShape.circle,
-                  ballSize: 50.0,
+                  ballSize: 50.0,gameMode: GameMode.easy,
                 ),
             gameInstruction: GameInstruction(
                 title: "Find Ball",

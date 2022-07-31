@@ -5,7 +5,7 @@ import 'ball_shape.dart';
 class GameSettings{
 
     final BallShape ballShape;
-    final GameMode gameMode;
+    GameMode gameMode;
     final double ballSize;
     final int secondsPerRound;
     final int totalRound;

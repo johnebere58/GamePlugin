@@ -79,7 +79,7 @@ class _MessageDialogState extends State<MessageDialog> {
     Color iconColor = widget.iconColor;
     String title = widget.title;
     return AnimatedOpacity(
-      opacity: hideUI?0:1,duration: const Duration(milliseconds: 400),
+      opacity: 1,duration: const Duration(milliseconds: 400),
       child: Center(
         child: Container(
           margin: const EdgeInsets.fromLTRB(40, 0, 40, 0),

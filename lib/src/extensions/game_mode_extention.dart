@@ -14,7 +14,17 @@ extension GameModeExtension on GameMode{
       index==0? 85:
       index==1?75:
       index==2?65:
-      50;
+      50
+  ;
+
+  String get name =>
+      index==0? "Easy":
+      index==1?"Normal":
+      index==2?"Hard":
+      "Difficult"
+  ;
+
+
 
   // int get gameTime =>
   //     index==0? 60:

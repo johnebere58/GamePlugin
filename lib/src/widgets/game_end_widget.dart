@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gameplugin/src/assets/color_assets.dart';
 import 'package:gameplugin/src/blocs/end_game_controller.dart';
 import 'package:gameplugin/src/blocs/restart_controller.dart';
+import 'package:gameplugin/src/blocs/timer_controller.dart';
 import 'package:gameplugin/src/extensions/game_mode_extention.dart';
 import 'package:gameplugin/src/models/game_settings.dart';
 import 'package:gameplugin/src/models/score_model.dart';
@@ -11,7 +12,10 @@ import 'package:gameplugin/src/utils/widget_utils.dart';
 
 class GameEndWidget extends StatefulWidget {
   final GameSettings gameSettings;
-  const GameEndWidget({required this.gameSettings,
+  final Function onQuit;
+  const GameEndWidget({
+    required this.gameSettings,
+    required this.onQuit,
    Key? key}):super(key:key);
    @override
    _GameEndWidgetState createState() => _GameEndWidgetState();
@@ -77,162 +81,163 @@ class GameEndWidget extends StatefulWidget {
            ),
          ),
              Container(
+               color: white,
                margin: const EdgeInsets.all(40),
-               child: Card(
-                 elevation: 0,
-                 color: white,
-                 child: Column(
-                   mainAxisSize: MainAxisSize.min,
-                   children: [
-                     Image.asset(
-                       "assets/images/${passed?"mood2":"mood4"}.png",package: "gameplugin",
-                     color: black,
-                     height: 100,),
-                     // addSpace(10),
-                     Text(
-                         passed?
-                             "Awesome. You did great"
-                             :"Oops. You can to try a little more",
-                         style: textStyle(true, 23, black),textAlign: TextAlign.center),
+               child: Column(
+                 mainAxisSize: MainAxisSize.min,
+                 children: [
+                   Image.asset(
+                     "assets/images/${passed?"mood2":"mood4"}.png",package: "gameplugin",
+                   color: black,
+                   height: 100,),
+                   // addSpace(10),
+                   Text(
+                       passed?
+                           "Awesome. You did great"
+                           :"Oops. You can to try a little more",
+                       style: textStyle(true, 23, black),textAlign: TextAlign.center),
 
-                     addSpace(20),
-                     Stack(
-                       alignment: Alignment.topCenter,
-                       children: [
-                         Container(
-                           margin: EdgeInsets.fromLTRB(0,35,0,0),
-                           width: double.infinity,
-                           // height: 100,
-                           padding: const EdgeInsets.all(5),
-                           decoration: BoxDecoration(
-                               color: default_white,
-                               borderRadius: BorderRadius.circular(10)
-                           ),
-                           child: Row(
-                             children: [
-                               Flexible(fit: FlexFit.tight,
-                                 child: Column(
-                                   mainAxisSize: MainAxisSize.min,
-                                   children: [
-                                     Text("$roundsPlayed/${gameSettings.totalRound}",style: textStyle(false, 14, black.withOpacity(.5)),),
-                                     addSpace(5),
-                                     Text("Rounds",style: textStyle(true, 16, black),),
-
-                                     ],
-                                 ),
-                               ),
-                               Container(
-                                 color: black.withOpacity(.1),width: .5,
-                                 height: 50,
-                               ),
-                               Flexible(fit: FlexFit.tight,
-                                 child: Container()
-                               ),
-
-                               Container(
-                                 color: black.withOpacity(.1),width: .5,
-                                 height: 50,
-                               ),
-                               Flexible(fit: FlexFit.tight,
-                                 child: Column(
-                                   mainAxisSize: MainAxisSize.min,
-                                   children: [
-                                     Text("$gameAccuracy%",style: textStyle(false, 14, black.withOpacity(.5)),),
-
-                                     addSpace(5),
-
-                                     Text("Accuracy",style: textStyle(true, 16, black),),
-
-                                     ],
-                                 ),
-                               ),
-
-
-                             ],
-                           ),
+                   addSpace(20),
+                   Stack(
+                     alignment: Alignment.topCenter,
+                     children: [
+                       Container(
+                         margin: EdgeInsets.fromLTRB(0,35,0,0),
+                         width: double.infinity,
+                         // height: 100,
+                         padding: const EdgeInsets.all(5),
+                         decoration: BoxDecoration(
+                             color: default_white,
+                             borderRadius: BorderRadius.circular(10)
                          ),
-                         Column(
-                           mainAxisSize: MainAxisSize.min,
+                         child: Row(
                            children: [
+                             Flexible(fit: FlexFit.tight,
+                               child: Column(
+                                 mainAxisSize: MainAxisSize.min,
+                                 children: [
+                                   Text("$roundsPlayed/${gameSettings.totalRound}",style: textStyle(false, 14, black.withOpacity(.5)),),
+                                   addSpace(5),
+                                   Text("Rounds",style: textStyle(true, 16, black),),
+
+                                   ],
+                               ),
+                             ),
                              Container(
-                                 width: 60,height: 60,
-                                 decoration: BoxDecoration(
-                                   color: passed?blue0:black,shape: BoxShape.circle
-                                 ),
-                                 alignment: Alignment.center,
-                                 child: Text("$score%",style: textStyle(true, 18, white),)),
-                             addSpace(5),
-                             Text("Score",style: textStyle(true, 16, black),),
+                               color: black.withOpacity(.1),width: .5,
+                               height: 50,
+                             ),
+                             Flexible(fit: FlexFit.tight,
+                               child: Container()
+                             ),
+
+                             Container(
+                               color: black.withOpacity(.1),width: .5,
+                               height: 50,
+                             ),
+                             Flexible(fit: FlexFit.tight,
+                               child: Column(
+                                 mainAxisSize: MainAxisSize.min,
+                                 children: [
+                                   Text("${gameAccuracy.toStringAsFixed(0)}%",style: textStyle(false, 14, black.withOpacity(.5)),),
+
+                                   addSpace(5),
+
+                                   Text("Accuracy",style: textStyle(true, 16, black),),
+
+                                   ],
+                               ),
+                             ),
+
 
                            ],
                          ),
-                       ],
-                     ),
-                     Container(
-                       margin: const EdgeInsets.only(top: 20),
-                       child: Text("Score up to ${passPercentage}% to pass the game",
-                           style: textStyle(false, 14, black),
-                           textAlign: TextAlign.center),
-                     ),
-                     addSpace(20),
-
-                     Row(
-                       children: [
-                         Flexible(fit: FlexFit.tight,
-                           child: Container(
-                             height: 50,
-                             width: double.infinity,
-                             child: TextButton(
-                               onPressed: (){
-
-                               },
-                               style: TextButton.styleFrom(
-                                 backgroundColor: black,
-                                 shape: RoundedRectangleBorder(
-                                   borderRadius: BorderRadius.circular(10)
-                                 )
+                       ),
+                       Column(
+                         mainAxisSize: MainAxisSize.min,
+                         children: [
+                           Container(
+                               width: 60,height: 60,
+                               decoration: BoxDecoration(
+                                 color: passed?blue0:black,shape: BoxShape.circle
                                ),
-                               child: Row(
-                                 mainAxisSize: MainAxisSize.min,
-                                 children: [
-                                   Text("Quit",style: textStyle(true, 20, white),),
-                                   // addSpaceWidth(5),
-                                   // const Icon(Icons.close,size: 25,color: white,)
-                                 ],
-                               ),
+                               alignment: Alignment.center,
+                               child: Text("${score.toStringAsFixed(0)}%",style: textStyle(true, 18, white),)),
+                           addSpace(5),
+                           Text("Score",style: textStyle(true, 16, black),),
+
+                         ],
+                       ),
+                     ],
+                   ),
+                   if(!passed)Container(
+                     margin: const EdgeInsets.only(top: 20),
+                     child: Text("Score up to ${passPercentage}% to pass the game",
+                         style: textStyle(false, 14, black),
+                         textAlign: TextAlign.center),
+                   ),
+                   addSpace(20),
+
+                   Row(
+                     children: [
+                       Flexible(fit: FlexFit.tight,
+                         child: Container(
+                           height: 50,
+                           width: double.infinity,
+                           child: TextButton(
+                             onPressed: (){
+                               widget.onQuit();
+                             },
+                             style: TextButton.styleFrom(
+                               backgroundColor: black,
+                               shape: RoundedRectangleBorder(
+                                 borderRadius: BorderRadius.circular(10)
+                               )
+                             ),
+                             child: Row(
+                               mainAxisSize: MainAxisSize.min,
+                               children: [
+                                 Text("Quit",style: textStyle(true, 20, white),),
+                                 // addSpaceWidth(5),
+                                 // const Icon(Icons.close,size: 25,color: white,)
+                               ],
                              ),
                            ),
                          ),
-                         addSpaceWidth(20),
-                         Flexible(fit: FlexFit.tight,
-                           child: Container(
-                             width: double.infinity,
-                             height: 50,
-                             child: TextButton(
-                               onPressed: (){
-                                 RestartController.instance.restartGame(afresh: true);
+                       ),
+                       addSpaceWidth(20),
+                       Flexible(fit: FlexFit.tight,
+                         child: Container(
+                           width: double.infinity,
+                           height: 50,
+                           child: TextButton(
+                             onPressed: (){
+                               scoreModel = ScoreModel();
+                               EndGameController.instance.resetScore();
+                               RestartController.instance.restartGame(afresh: true);
+                               TimerController.instance.resetTimer();
+                               setState(() {});
                                },
-                               style: TextButton.styleFrom(
-                                   backgroundColor: black,
-                                   shape: RoundedRectangleBorder(
-                                       borderRadius: BorderRadius.circular(10)
-                                   )
-                               ),
-                               child: Row(
-                                 mainAxisSize: MainAxisSize.min,
-                                 children: [
-                                   Text("Restart",style: textStyle(true, 20, white),),
-                                   // addSpaceWidth(5),
-                                   // const Icon(Icons.refresh,size: 25,color: white,)
-                                 ],
-                               ),
+                             style: TextButton.styleFrom(
+                                 backgroundColor: black,
+                                 shape: RoundedRectangleBorder(
+                                     borderRadius: BorderRadius.circular(10)
+                                 )
+                             ),
+                             child: Row(
+                               mainAxisSize: MainAxisSize.min,
+                               children: [
+                                 Text("Restart",style: textStyle(true, 20, white),),
+                                 // addSpaceWidth(5),
+                                 // const Icon(Icons.refresh,size: 25,color: white,)
+                               ],
                              ),
                            ),
-                         )
-                       ],
-                     )
-                   ],
-                 ),
+                         ),
+                       )
+                     ],
+                   )
+                 ],
                ),
              )
            ],

@@ -8,6 +8,7 @@ import 'package:gameplugin/src/blocs/restart_controller.dart';
 import 'package:gameplugin/src/models/game_instruction.dart';
 import 'package:gameplugin/src/models/game_settings.dart';
 import 'package:gameplugin/src/models/score_model.dart';
+import 'package:gameplugin/src/pages/game_settings_page.dart';
 import 'package:gameplugin/src/utils/dailog_utils.dart';
 import 'package:gameplugin/src/utils/widget_utils.dart';
 import 'package:gameplugin/src/widgets/countdown_timer_widget.dart';
@@ -112,7 +113,9 @@ class _GameHomeState extends State<GameHome> with TickerProviderStateMixin {
 
               quitButton(),
 
-              GameEndWidget(gameSettings: _gameSettings)
+              GameEndWidget(gameSettings: _gameSettings,onQuit: (){
+                clickQuit();
+              },)
             ]
         ),
       ),
@@ -154,7 +157,16 @@ Widget settingsButton(){
           margin: const EdgeInsets.only(top: 20,right: 80,bottom: 20),
           child: ElevatedButton(
             onPressed: ()async{
+              launchNewScreen(context, GameSettingsPage(_gameSettings),
+              result: (_){
 
+                if(_==true){
+                  restartGame();
+                }else{
+                  resumeGame();
+                }
+
+              });
             },
             style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.all(0),
@@ -171,11 +183,12 @@ Widget settingsButton(){
           ),
         ),
       ),);
-}
+  }
 
 
-  Widget switchGameButton(){
-    return Align(alignment: Alignment.topRight,
+Widget switchGameButton(){
+    return Align(
+      alignment: Alignment.topRight,
       child: SafeArea(
         child: Container(
           width: 40,height: 40,
@@ -211,6 +224,11 @@ Widget settingsButton(){
       ),);
   }
 
+  clickQuit(){
+    yesNoDialog(context, "Quit Game", "Are you sure?", (){
+      Navigator.pop(context,false);
+    });
+  }
 
  Widget quitButton(){
 
@@ -222,9 +240,7 @@ Widget settingsButton(){
             width: 40,height: 40,
             child: ElevatedButton(
               onPressed: ()async{
-                yesNoDialog(context, "Quit Game", "Are you sure?", (){
-                  Navigator.pop(context,false);
-                });
+                clickQuit();
               },
               style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.all(0),
@@ -258,8 +274,8 @@ Widget introScreen(){
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              addSpace(60),
-              Text(_gameInstruction.title,style: textStyle(true, 30, black),),
+              addSpace(80),
+              Text(_gameInstruction.title,style: textStyle(true, 35, black),),
               addSpace(10),
               Text(_gameInstruction.description,style: textStyle(false, 16, black),),
               Expanded(child: Container()),
@@ -274,12 +290,15 @@ Widget introScreen(){
                     RestartController.instance.restartGame(afresh: true);
 
                   },
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0)
+                  ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text("Start",style: textStyle(true, 24, black),),
                       addSpaceWidth(5),
-                      const Icon(Icons.arrow_right_alt,size: 30,color: black,)
+                      const Icon(Icons.arrow_right,size: 40,color: black,)
                     ],
                   ),
                 ),
@@ -290,5 +309,18 @@ Widget introScreen(){
       ),
     );
 }
+
+
+ void pauseGame(){
+
+ }
+
+ void resumeGame(){
+
+ }
+
+ void restartGame(){
+
+ }
 
 }

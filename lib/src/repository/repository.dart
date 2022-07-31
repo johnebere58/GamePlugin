@@ -4,6 +4,7 @@ import 'package:gameplugin/src/blocs/ball_event_controller.dart';
 import 'package:gameplugin/src/blocs/end_game_controller.dart';
 import 'package:gameplugin/src/blocs/pop_single_text_controller.dart';
 import 'package:gameplugin/src/blocs/restart_controller.dart';
+import 'package:gameplugin/src/blocs/timer_controller.dart';
 import 'package:get_it/get_it.dart';
 
  GetIt getIt = GetIt.instance..allowReassignment = true;
@@ -25,6 +26,8 @@ import 'package:get_it/get_it.dart';
      getIt.registerSingleton<RestartController>(RestartController());
 
      getIt.registerSingleton<EndGameController>(EndGameController());
+
+     getIt.registerSingleton<TimerController>(TimerController());
 
    }
 
