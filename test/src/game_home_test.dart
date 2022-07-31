@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:gameplugin/gameplugin.dart';
 import 'package:gameplugin/src/game_home.dart';
 import 'package:gameplugin/src/extensions/ball_count_extention.dart';
+import 'package:gameplugin/src/models/game_instruction.dart';
 import 'package:gameplugin/src/repository/repository.dart';
 
 void main(){
@@ -15,11 +16,12 @@ void main(){
   group("Game Home Test",(){
 
     BallCount ballCount = BallCount.four;
-    GameSettings gameSettings = GameSettings(ballCount: ballCount);
+    GameSettings gameSettings = GameSettings();
     Repository.startUp();
     testWidgets("Test if balls are created", (tester) async{
 
-      await tester.pumpWidget(MaterialApp(home: GameHome(gameSettings)));
+      await tester.pumpWidget(MaterialApp(home: GameHome(gameSettings:gameSettings,
+        gameInstruction: GameInstruction(title: '',description: ''),)));
       await tester.pumpAndSettle(const Duration(seconds: 4));
       for(int i=0;i<ballCount.getValue;i++){
         expect(find.descendant(of: find.byType(SizedBox),
@@ -31,7 +33,8 @@ void main(){
 
     testWidgets("test if balls are shuffling", (tester)async {
 
-      await tester.pumpWidget(MaterialApp(home: GameHome(gameSettings)));
+      await tester.pumpWidget(MaterialApp(home: GameHome(gameSettings: gameSettings,
+        gameInstruction: GameInstruction(title: '',description: ''),)));
       await tester.pumpAndSettle(const Duration(milliseconds: 500));
       double ballPosition1 = tester.getCenter(find.byKey(const ValueKey(0)),).dx;
       double ballPosition2 = tester.getCenter(find.byKey(const ValueKey(1)),).dx;
@@ -56,7 +59,9 @@ void main(){
     });
 
     testWidgets("test if you can quit game", (tester)async{
-      await tester.pumpWidget(MaterialApp(home: GameHome(gameSettings)));
+      await tester.pumpWidget(MaterialApp(home: GameHome(
+          gameSettings:gameSettings,
+          gameInstruction: GameInstruction(title: '',description: ''))));
       await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       await tester.tap(find.byIcon(Icons.close));
@@ -72,7 +77,9 @@ void main(){
     });
 
     testWidgets("test if you can switch mode", (tester) async{
-      await tester.pumpWidget(MaterialApp(home: GameHome(gameSettings)));
+      await tester.pumpWidget(MaterialApp(
+          home: GameHome(gameSettings:gameSettings,
+              gameInstruction: GameInstruction(title: '',description: ''))));
       await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       await tester.tap(find.byIcon(Icons.unfold_more));

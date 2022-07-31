@@ -11,7 +11,7 @@ class RestartController {
 
   Stream<bool> get stream => _streamController.stream;
 
-  void restartGame({bool afresh=false}) {
+  void restartGame({required bool afresh}) {
     _streamController.add(afresh);
   }
 

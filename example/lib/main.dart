@@ -46,11 +46,12 @@ class _MyHomePageState extends State<MyHomePage> {
           onPressed: (){
             GameManager().launchGame(context,
                 gameSettings: GameSettings(
-                  ballCount: BallCount.four,
                   ballShape: BallShape.circle,
                   ballSize: 50.0,
-                  gameSpeed: GameSpeed.normal
-                ));
+                ),
+            gameInstruction: GameInstruction(
+                title: "Find Ball",
+                description: "Find the ball with the color as the balls are hidden and shuffled around"));
           },
           child: const Text("Play Game"),
         ),

@@ -1,4 +1,4 @@
-
- enum GameSpeed{
-   normal,fast,extreme
- }
+ //
+ // enum GameSpeed{
+ //   normal,fast,extreme
+ // }
