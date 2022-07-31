@@ -59,7 +59,7 @@ class GameEndWidget extends StatefulWidget {
 
 
      return IgnorePointer(
-       ignoring: scoreModel.totalPlayed!=0,
+       ignoring: scoreModel.totalPlayed==0,
        child: AnimatedOpacity(
          duration: const Duration(milliseconds: 500),
          opacity: scoreModel.totalPlayed==0?0:1,
