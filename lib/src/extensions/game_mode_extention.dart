@@ -1,7 +1,6 @@
 
 import 'package:gameplugin/gameplugin.dart';
 import 'package:gameplugin/src/models/game_mode.dart';
-import 'package:gameplugin/src/extensions/ball_count_extention.dart';
 
 extension GameModeExtension on GameMode{
 
@@ -17,13 +16,13 @@ extension GameModeExtension on GameMode{
       index==2?65:
       50;
 
-  int get gameTime =>
-      index==0? 60:
-      index==1? 90:
-      index==2? 120:
-      150;
-
-  int get gameRounds =>
-      gameTime~/5;
+  // int get gameTime =>
+  //     index==0? 60:
+  //     index==1? 90:
+  //     index==2? 120:
+  //     150;
+  //
+  // int get gameRounds =>
+  //     gameTime~/5;
 
 }

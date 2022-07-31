@@ -3,9 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gameplugin/gameplugin.dart';
 import 'package:gameplugin/src/assets/color_assets.dart';
+import 'package:gameplugin/src/blocs/end_game_controller.dart';
 import 'package:gameplugin/src/blocs/restart_controller.dart';
 import 'package:gameplugin/src/models/game_instruction.dart';
 import 'package:gameplugin/src/models/game_settings.dart';
+import 'package:gameplugin/src/models/score_model.dart';
 import 'package:gameplugin/src/utils/dailog_utils.dart';
 import 'package:gameplugin/src/utils/widget_utils.dart';
 import 'package:gameplugin/src/widgets/countdown_timer_widget.dart';
@@ -33,7 +35,6 @@ class _GameHomeState extends State<GameHome> with TickerProviderStateMixin {
   late GameInstruction _gameInstruction;
   final List<StreamSubscription> _streamSubscriptions = [];
   late AnimationController _animationController;
-
   @override
   void initState() {
     // TODO: implement initState
@@ -54,6 +55,7 @@ class _GameHomeState extends State<GameHome> with TickerProviderStateMixin {
           if(mounted)setState(() {});
         }
     );
+
 
   }
 
@@ -97,8 +99,8 @@ class _GameHomeState extends State<GameHome> with TickerProviderStateMixin {
                 child: Container(
                   margin: const EdgeInsets.fromLTRB(75, 28, 0, 0),
                   child: CountDownTimerWidget(
-                    time: 60,onComplete: (){
-
+                    time: _gameSettings.gateTime,onComplete: (){
+                      EndGameController.instance.endGame();
                   },
                   ),
                 ),
@@ -106,13 +108,11 @@ class _GameHomeState extends State<GameHome> with TickerProviderStateMixin {
 
               const PopTextWidget(),
 
-              scoreBoard(),
-
               introScreen(),
 
               quitButton(),
 
-              GameEndWidget()
+              GameEndWidget(gameSettings: _gameSettings)
             ]
         ),
       ),
@@ -242,70 +242,6 @@ Widget settingsButton(){
           ),
         ),
       ),);
-}
-
-Widget scoreBoard(){
-
-    return Container();
-    return Align(alignment: Alignment.bottomRight,
-      child: Container(
-        margin: EdgeInsets.all(20),
-        width: double.infinity,
-        // height: 100,
-        padding: const EdgeInsets.all(5),
-        decoration: BoxDecoration(
-            color: default_white,
-            borderRadius: BorderRadius.circular(10)
-        ),
-        child: Row(
-          children: [
-            Flexible(fit: FlexFit.tight,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text("Score",style: textStyle(true, 14, black),),
-                  // addLine(.5, black.withOpacity(.1), 0, 5, 0, 5),
-                  addSpace(5),
-                  Text("10",style: textStyle(false, 14, black.withOpacity(.5)),),
-                ],
-              ),
-            ),
-            Container(
-              color: black.withOpacity(.1),width: .5,
-              height: 50,
-            ),
-            Flexible(fit: FlexFit.tight,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text("Round",style: textStyle(true, 14, black),),
-                  // addLine(.5, black.withOpacity(.1), 0, 5, 0, 5),
-                  addSpace(5),
-                  Text("1/10",style: textStyle(false, 14, black.withOpacity(.5)),),
-                ],
-              ),
-            ),
-            Container(
-              color: black.withOpacity(.1),width: .5,
-              height: 50,
-            ),
-            Flexible(fit: FlexFit.tight,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text("Difficulty",style: textStyle(true, 14, black),),
-                  // addLine(.5, black.withOpacity(.1), 0, 5, 0, 5),
-                  addSpace(5),
-                  Text("Easy",style: textStyle(false, 14, black.withOpacity(.5)),),
-                ],
-              ),
-            ),
-
-
-          ],
-        ),
-      ),
-    );
 }
 
 bool showIntro = true;

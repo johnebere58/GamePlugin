@@ -4,6 +4,7 @@
   final int totalPassed;
   final int totalFailed;
 
-  ScoreModel({required this.totalPassed,required this.totalFailed});
+  ScoreModel({this.totalPassed=0,this.totalFailed=0});
 
+  int get totalPlayed => totalPassed+totalFailed;
  }

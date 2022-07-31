@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:gameplugin/src/assets/ball_assets.dart';
 import 'package:gameplugin/src/blocs/ball_controller.dart';
+import 'package:gameplugin/src/blocs/end_game_controller.dart';
 import 'package:gameplugin/src/blocs/pop_single_text_controller.dart';
 import 'package:gameplugin/src/blocs/restart_controller.dart';
 import 'package:gameplugin/src/models/ball_info.dart';
@@ -52,6 +53,9 @@ class _FindBallGameState extends State<FindBallGame> {
     createBalls();
     _streamSubscriptions.add(RestartController.instance.stream.listen((bool afresh) {
       startShuffle(afresh: afresh);
+      if(afresh){
+        EndGameController.instance.resetScore();
+      }
     }));
     _streamSubscriptions.add(BallController.instance.stream.listen((BallInfo? ballInfo) {
       if(ballInfo==null)return;
@@ -59,8 +63,10 @@ class _FindBallGameState extends State<FindBallGame> {
 
       if(ballInfo.ballId == _ballIndexToFind){
          PopSingleTextController.instance.popCorrect();
+         EndGameController.instance.increasePassed();
        }else{
          PopSingleTextController.instance.popWrong();
+         EndGameController.instance.increaseFailed();
        }
       _ballIndexToFind=-1;
       if(mounted)setState(() {});
