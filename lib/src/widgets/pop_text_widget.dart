@@ -65,24 +65,19 @@ class PopTextWidget extends StatefulWidget {
        ),
            AnimatedOpacity(
              duration: const Duration(milliseconds: 500),
-             opacity: 1,//_textData!=null?1:0,
-             child: AnimatedPositioned(
+             opacity: 1,
+             child: AnimatedScale(
+               scale: _textData!=null?3:1,
                duration: const Duration(milliseconds: 500),
-               top: _textData!=null?60:-60,
-               left: (getScreenWidth(context)/2 -150),
-               child: AnimatedScale(
-                 scale: _textData!=null?3:1,
-                 duration: const Duration(milliseconds: 500),
-                 alignment: Alignment.center,
-                 // (width: 50,height: 100,
-               child: //_textData==null?Container():
-               Text(_textData?.text ?? "",
-                   style: textStyle(true, 15,
-                     _textData?.textColor??white,
-                   ),
-                   textAlign: TextAlign.center),
-             ),
-             ),
+               alignment: Alignment.center,
+               // (width: 50,height: 100,
+             child: //_textData==null?Container():
+             Text(_textData?.text ?? "",
+                 style: textStyle(true, 15,
+                   _textData?.textColor??white,
+                 ),
+                 textAlign: TextAlign.center),
+           ),
            ),
          ],
        ),

@@ -9,6 +9,7 @@ import 'package:gameplugin/src/models/game_settings.dart';
 import 'package:gameplugin/src/utils/dailog_utils.dart';
 import 'package:gameplugin/src/utils/widget_utils.dart';
 import 'package:gameplugin/src/widgets/countdown_timer_widget.dart';
+import 'package:gameplugin/src/widgets/game_end_widget.dart';
 import 'package:gameplugin/src/widgets/pop_text_widget.dart';
 
 import 'games/find_ball_game.dart';
@@ -94,9 +95,9 @@ class _GameHomeState extends State<GameHome> with TickerProviderStateMixin {
 
               if(!showIntro)SafeArea(
                 child: Container(
-                  margin: const EdgeInsets.fromLTRB(70, 25, 0, 0),
+                  margin: const EdgeInsets.fromLTRB(75, 28, 0, 0),
                   child: CountDownTimerWidget(
-                    time: 120,onComplete: (){
+                    time: 60,onComplete: (){
 
                   },
                   ),
@@ -110,6 +111,8 @@ class _GameHomeState extends State<GameHome> with TickerProviderStateMixin {
               introScreen(),
 
               quitButton(),
+
+              GameEndWidget()
             ]
         ),
       ),
@@ -351,4 +354,5 @@ Widget introScreen(){
       ),
     );
 }
+
 }

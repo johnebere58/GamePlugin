@@ -24,7 +24,7 @@ class CountDownTimerWidget extends StatefulWidget {
     // TODO: implement initState
     super.initState();
     time = widget.time;
-    timer = Timer.periodic(Duration(seconds: time), (timer) {
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if(time<=0){
         widget.onComplete();
         timer.cancel();

@@ -11,7 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   plugin_platform_interface: ^2.0.2
-  get_it: 7.2.0
+  get_it: ^7.2.0
 
 
 dev_dependencies:
@@ -42,3 +42,7 @@ flutter:
         pluginClass: GamepluginPlugin
       ios:
         pluginClass: GamepluginPlugin
+
+
+  assets:
+    - assets/images/

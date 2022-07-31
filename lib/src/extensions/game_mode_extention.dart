@@ -11,5 +11,19 @@ extension GameModeExtension on GameMode{
       index==2?BallCount.four:
       BallCount.eight;
 
+  double get passPercentage =>
+      index==0? 85:
+      index==1?75:
+      index==2?65:
+      50;
+
+  int get gameTime =>
+      index==0? 60:
+      index==1? 90:
+      index==2? 120:
+      150;
+
+  int get gameRounds =>
+      gameTime~/5;
 
 }

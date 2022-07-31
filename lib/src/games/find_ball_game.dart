@@ -62,7 +62,8 @@ class _FindBallGameState extends State<FindBallGame> {
        }else{
          PopSingleTextController.instance.popWrong();
        }
-
+      _ballIndexToFind=-1;
+      if(mounted)setState(() {});
        Future.delayed(const Duration(milliseconds: 1000),(){
          RestartController.instance.restartGame(afresh: false);
        });
