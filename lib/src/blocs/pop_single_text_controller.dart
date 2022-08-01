@@ -13,15 +13,15 @@ class PopSingleTextController {
 
   Stream<TextData> get stream => _streamController.stream;
 
-  void popText(Color textColor,String text){
-    _streamController.add(TextData(textColor: textColor,text: text));
+  void popText(Color textColor,String text,bool isCorrect){
+    _streamController.add(TextData(textColor: textColor,text: text,isCorrect:isCorrect));
   }
   
   void popCorrect(){
-    popText(Colors.blue, "Correct");
+    popText(Colors.blue, "Correct",true);
   }
   void popWrong(){
-    popText(Colors.red, "Wrong");
+    popText(Colors.red, "Wrong",false);
   }
   
  }

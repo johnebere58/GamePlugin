@@ -23,11 +23,11 @@ class GameManager{
    void launchGame(BuildContext context,
        {required GameSettings gameSettings,
        required GameInstruction gameInstruction}){
-     //uses default game settings if no settings was added
-     // gameSettings = gameSettings ?? GameSettings();
+
      if(!initialized){
        throw Exception("game not initialized, please call [GameManager.initialize] first");
      }
+
      launchNewScreen(context, GameHome(gameSettings:gameSettings,
          gameInstruction: gameInstruction));
    }

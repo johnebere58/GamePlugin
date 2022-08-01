@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:gameplugin/src/assets/color_assets.dart';
+import 'package:gameplugin/src/assets/string_assets.dart';
 import 'package:gameplugin/src/blocs/end_game_controller.dart';
 import 'package:gameplugin/src/blocs/restart_controller.dart';
 import 'package:gameplugin/src/blocs/timer_controller.dart';
@@ -9,6 +11,7 @@ import 'package:gameplugin/src/extensions/game_mode_extention.dart';
 import 'package:gameplugin/src/models/game_settings.dart';
 import 'package:gameplugin/src/models/score_model.dart';
 import 'package:gameplugin/src/utils/widget_utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class GameEndWidget extends StatefulWidget {
   final GameSettings gameSettings;
@@ -34,14 +37,27 @@ class GameEndWidget extends StatefulWidget {
 
     _streamSubscriptions.add(EndGameController.instance.stream.listen((score) {
       scoreModel = score;
+      saveHighScore();
       if(mounted)setState((){});
     }));
+  }
 
+  saveHighScore()async{
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    double highScore = pref.getDouble(createKey(highScoreKey))??0;
+    double accuracy = pref.getDouble(createKey(accuracyKey))??0;
+
+    pref.setDouble(createKey(highScoreKey), max(highScore, score));
+    pref.setDouble(createKey(accuracyKey), max(accuracy, gameAccuracy));
+  }
+
+  String createKey(String key){
+    return "${gameSettings.gameId.name}$key";
   }
 
   int get roundsPlayed => scoreModel.totalFailed + scoreModel.totalPassed;
   double get roundsCompleted => (roundsPlayed / gameSettings.totalRound) * 100;
-  double get gameAccuracy => (scoreModel.totalPassed/roundsPlayed) * 100;
+  double get gameAccuracy => (scoreModel.totalPassed/max(1,roundsPlayed)) * 100;
   double get score => (gameAccuracy + roundsCompleted)/2;
   double get passPercentage => gameSettings.gameMode.passPercentage;
   bool get passed => score >= passPercentage;
@@ -63,10 +79,10 @@ class GameEndWidget extends StatefulWidget {
 
 
      return IgnorePointer(
-       ignoring: scoreModel.totalPlayed==0,
+       ignoring: !scoreModel.scoreReady,
        child: AnimatedOpacity(
          duration: const Duration(milliseconds: 500),
-         opacity: scoreModel.totalPlayed==0?0:1,
+         opacity: !scoreModel.scoreReady?0:1,
          child: Stack(
            alignment: Alignment.center,
            children: [
@@ -102,7 +118,7 @@ class GameEndWidget extends StatefulWidget {
                      alignment: Alignment.topCenter,
                      children: [
                        Container(
-                         margin: EdgeInsets.fromLTRB(0,35,0,0),
+                         margin: const EdgeInsets.fromLTRB(0,35,0,0),
                          width: double.infinity,
                          // height: 100,
                          padding: const EdgeInsets.all(5),
@@ -116,7 +132,7 @@ class GameEndWidget extends StatefulWidget {
                                child: Column(
                                  mainAxisSize: MainAxisSize.min,
                                  children: [
-                                   Text("$roundsPlayed/${gameSettings.totalRound}",style: textStyle(false, 14, black.withOpacity(.5)),),
+                                   Text("$roundsPlayed",style: textStyle(false, 14, black.withOpacity(.5)),),
                                    addSpace(5),
                                    Text("Rounds",style: textStyle(true, 16, black),),
 

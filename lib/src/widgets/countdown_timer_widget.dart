@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:gameplugin/src/assets/color_assets.dart';
 import 'package:gameplugin/src/blocs/end_game_controller.dart';
 import 'package:gameplugin/src/blocs/timer_controller.dart';
+import 'package:gameplugin/src/models/timer_action.dart';
 import 'package:gameplugin/src/utils/widget_utils.dart';
 
 class CountDownTimerWidget extends StatefulWidget {
@@ -30,17 +31,27 @@ class CountDownTimerWidget extends StatefulWidget {
     deftime = widget.time;
     time = widget.time;
 
-    _streamSubscriptions.add(TimerController.instance.stream.listen((score) {
-      createTimer();
+    _streamSubscriptions.add(TimerController.instance.stream.listen((TimerAction action) {
+      if(action==TimerAction.restart){
+        time=deftime;
+        createTimer();
+      }
+      if(action==TimerAction.pause){
+        timer?.cancel();
+      }
+      if(action==TimerAction.play){
+        createTimer();
+      }
     }));
     createTimer();
   }
 
   createTimer(){
     timer?.cancel();
-    time=deftime;
+    TimerController.instance.timeUp=false;
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if(time<=0){
+        TimerController.instance.timeUp=true;
         widget.onComplete();
         timer.cancel();
         return;

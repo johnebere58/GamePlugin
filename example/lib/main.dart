@@ -46,6 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
           onPressed: (){
             GameManager().launchGame(context,
                 gameSettings: GameSettings(
+                  gameId: GameIds.find_ball_game,
                   ballShape: BallShape.circle,
                   ballSize: 50.0,gameMode: GameMode.easy,
                 ),

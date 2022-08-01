@@ -4,6 +4,7 @@ class TextData{
 
     final Color textColor;
     final String text;
+    final bool isCorrect;
 
-    TextData({required this.textColor, required this.text});
+    TextData({required this.textColor, required this.text, required this.isCorrect});
  }

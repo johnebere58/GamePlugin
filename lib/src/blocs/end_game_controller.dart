@@ -1,8 +1,10 @@
 
 import 'dart:async';
+import 'package:gameplugin/src/blocs/timer_controller.dart';
 import 'package:gameplugin/src/models/score_model.dart';
 import 'package:gameplugin/src/repository/repository.dart';
 import 'package:gameplugin/src/models/ball_info.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EndGameController {
 
@@ -27,8 +29,9 @@ class EndGameController {
     _rounds++;
   }
 
-  void endGame() {
-    _streamController.add(ScoreModel(totalFailed: _failed,totalPassed: _passed));
+  void endGame(){
+    _streamController.add(ScoreModel(totalFailed: _failed,totalPassed: _passed,scoreReady: true));
+    TimerController.instance.pause();
   }
 
   void resetScore(){

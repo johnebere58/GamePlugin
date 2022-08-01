@@ -1,10 +1,16 @@
 
 import 'dart:async';
+import 'dart:typed_data';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:gameplugin/gameplugin.dart';
 import 'package:gameplugin/src/assets/color_assets.dart';
+import 'package:gameplugin/src/assets/string_assets.dart';
 import 'package:gameplugin/src/blocs/end_game_controller.dart';
+import 'package:gameplugin/src/blocs/game_settings_controller.dart';
+import 'package:gameplugin/src/blocs/pop_single_text_controller.dart';
 import 'package:gameplugin/src/blocs/restart_controller.dart';
+import 'package:gameplugin/src/blocs/timer_controller.dart';
 import 'package:gameplugin/src/models/game_instruction.dart';
 import 'package:gameplugin/src/models/game_settings.dart';
 import 'package:gameplugin/src/models/score_model.dart';
@@ -14,9 +20,12 @@ import 'package:gameplugin/src/utils/widget_utils.dart';
 import 'package:gameplugin/src/widgets/countdown_timer_widget.dart';
 import 'package:gameplugin/src/widgets/game_end_widget.dart';
 import 'package:gameplugin/src/widgets/pop_text_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'games/find_ball_game.dart';
 import 'extensions/ball_count_extention.dart';
+import 'package:vibration/vibration.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 
 class GameHome extends StatefulWidget {
@@ -29,17 +38,21 @@ class GameHome extends StatefulWidget {
   State<GameHome> createState() => _GameHomeState();
 }
 
-class _GameHomeState extends State<GameHome> with TickerProviderStateMixin {
+class _GameHomeState extends State<GameHome> with TickerProviderStateMixin, WidgetsBindingObserver {
 
 
   late GameSettings _gameSettings;
   late GameInstruction _gameInstruction;
   final List<StreamSubscription> _streamSubscriptions = [];
   late AnimationController _animationController;
+  bool enableSound = false;
+  bool enableVibrate = false;
+  AudioPlayer audioPlayer = AudioPlayer();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    loadSound();
     _gameSettings = widget.gameSettings;
     _gameInstruction = widget.gameInstruction;
 
@@ -56,8 +69,27 @@ class _GameHomeState extends State<GameHome> with TickerProviderStateMixin {
           if(mounted)setState(() {});
         }
     );
+    _streamSubscriptions.add(
+        PopSingleTextController.
+        instance.stream.listen((event) {
+          playSound(correct: event.isCorrect);
+        }));
+
+    _streamSubscriptions.add(
+        GameSettingsController.
+        instance.stream.listen((event) {
+          _gameSettings=event;
+          if(mounted)setState((){});
+          // if(!TimerController.instance.timeUp) {
+          //   RestartController.instance.restartGame(afresh: true);
+          // }
+        }));
 
 
+
+    WidgetsBinding.instance.addObserver(this);
+
+    checkSettings();
   }
 
 
@@ -71,6 +103,8 @@ class _GameHomeState extends State<GameHome> with TickerProviderStateMixin {
       stream.cancel();
     }
     _animationController.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+    audioPlayer.dispose();
     super.dispose();
   }
 
@@ -94,7 +128,7 @@ class _GameHomeState extends State<GameHome> with TickerProviderStateMixin {
 
               restartButton(),
 
-              settingsButton(),
+
 
               if(!showIntro)SafeArea(
                 child: Container(
@@ -115,7 +149,9 @@ class _GameHomeState extends State<GameHome> with TickerProviderStateMixin {
 
               GameEndWidget(gameSettings: _gameSettings,onQuit: (){
                 clickQuit();
-              },)
+              },),
+
+              settingsButton(),
             ]
         ),
       ),
@@ -127,10 +163,10 @@ class _GameHomeState extends State<GameHome> with TickerProviderStateMixin {
       child: SafeArea(
         child: Container(
           width: 40,height: 40,
-          margin: const EdgeInsets.only(top: 20,right: 20,bottom: 20),
+          margin: const EdgeInsets.only(top: 20,right: 80,bottom: 20),
           child: ElevatedButton(
             onPressed: ()async{
-              RestartController.instance.restartGame(afresh: true);
+              restartGame();
             },
             style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.all(0),
@@ -154,11 +190,14 @@ Widget settingsButton(){
       child: SafeArea(
         child: Container(
           width: 40,height: 40,
-          margin: const EdgeInsets.only(top: 20,right: 80,bottom: 20),
+          margin: const EdgeInsets.only(top: 20,right: 20,bottom: 20),
           child: ElevatedButton(
             onPressed: ()async{
+              pauseGame();
               launchNewScreen(context, GameSettingsPage(_gameSettings),
               result: (_){
+
+                if(TimerController.instance.timeUp)return;
 
                 if(_==true){
                   restartGame();
@@ -185,44 +224,6 @@ Widget settingsButton(){
       ),);
   }
 
-
-Widget switchGameButton(){
-    return Align(
-      alignment: Alignment.topRight,
-      child: SafeArea(
-        child: Container(
-          width: 40,height: 40,
-          margin: const EdgeInsets.only(top: 20,right: 80,bottom: 20),
-          child: ElevatedButton(
-            onPressed: ()async{
-              List<BallCount> balls = BallCount.values.toList();
-              List items = List.generate(balls.length, (index) => "${balls[index].getValue} Ball Game");
-             showListDialog(context, items, (i){
-               BallCount ballCount = balls[i];
-               _gameSettings = GameSettings(
-                   // gameSpeed: _gameSettings.gameSpeed,
-                   ballShape: _gameSettings.ballShape,
-                 // ballCount: ballCount,
-                   ballSize: _gameSettings.ballSize);
-               setState(() {});
-             },returnIndex: true);
-            },
-            style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.all(0),
-                shape:  CircleBorder(
-                  side: BorderSide(
-                    color: black.withOpacity(.1),width: 1
-                  )
-                ),
-                elevation: 5,shadowColor: black.withOpacity(.1),
-                primary: white
-            ),
-            child: const Icon(Icons.unfold_more,
-              color: black,),
-          ),
-        ),
-      ),);
-  }
 
   clickQuit(){
     yesNoDialog(context, "Quit Game", "Are you sure?", (){
@@ -312,15 +313,65 @@ Widget introScreen(){
 
 
  void pauseGame(){
-
+  TimerController.instance.pause();
+  audioPlayer.stop();
+  checkSettings();
  }
 
  void resumeGame(){
-
+  TimerController.instance.resume();
+  checkSettings();
  }
 
  void restartGame(){
-
+  TimerController.instance.resetTimer();
+  EndGameController.instance.resetScore();
+  RestartController.instance.restartGame(afresh: true);
+  checkSettings();
  }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // TODO: implement didChangeAppLifecycleState
+    if (state == AppLifecycleState.paused) {
+      pauseGame();
+    }
+    if (state == AppLifecycleState.resumed) {
+      resumeGame();
+    }
+
+    super.didChangeAppLifecycleState(state);
+  }
+
+
+  checkSettings()async{
+    SharedPreferences shed = await SharedPreferences.getInstance();
+    enableSound = shed.getBool(soundKey)??false;
+    enableVibrate = shed.getBool(vibrateKey)??false;
+    if(mounted)setState((){});
+  }
+
+  late Uint8List correctSoundData;
+  late Uint8List wrongSoundData;
+  loadSound()async{
+    final cdata = await rootBundle.load('packages/gameplugin/assets/sounds/slow.mp3');
+    final wdata = await rootBundle.load('packages/gameplugin/assets/sounds/error.mp3');
+
+    correctSoundData = cdata.buffer.asUint8List(cdata.offsetInBytes, cdata.lengthInBytes);
+    wrongSoundData = wdata.buffer.asUint8List(wdata.offsetInBytes, wdata.lengthInBytes);
+  }
+
+  playSound({required bool correct}){
+   if(!enableSound)return;
+   if(correct)audioPlayer.play(BytesSource(correctSoundData));
+   if(!correct)audioPlayer.play(BytesSource(wrongSoundData));
+   vibrate();
+}
+
+  vibrate(){
+  if(!enableVibrate)return;
+  Vibration.vibrate(
+    duration:100
+  );
+  }
 }

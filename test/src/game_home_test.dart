@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:gameplugin/gameplugin.dart';
 import 'package:gameplugin/src/game_home.dart';
 import 'package:gameplugin/src/extensions/ball_count_extention.dart';
+import 'package:gameplugin/src/models/game_ids.dart';
 import 'package:gameplugin/src/models/game_instruction.dart';
 import 'package:gameplugin/src/repository/repository.dart';
 
@@ -16,7 +17,7 @@ void main(){
   group("Game Home Test",(){
 
     BallCount ballCount = BallCount.four;
-    GameSettings gameSettings = GameSettings();
+    GameSettings gameSettings = GameSettings(gameId: GameIds.find_ball_game);
     Repository.startUp();
     testWidgets("Test if balls are created", (tester) async{
 
