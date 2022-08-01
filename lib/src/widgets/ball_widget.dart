@@ -55,6 +55,7 @@ class _BallWidgetState extends State<BallWidget> {
     BallShape ballShape = _ballInfo!.ballShape;
     return GestureDetector(
       onTap: (){
+        if(!BallController.instance.canTap)return;
         _ballController.ballTapped(_ballInfo);
       },
       child: SizedBox(

@@ -21,8 +21,7 @@ void main(){
     Repository.startUp();
     testWidgets("Test if balls are created", (tester) async{
 
-      await tester.pumpWidget(MaterialApp(home: GameHome(gameSettings:gameSettings,
-        gameInstruction: GameInstruction(title: '',description: ''),)));
+      await tester.pumpWidget(MaterialApp(home: GameHome(gameSettings:gameSettings)));
       await tester.pumpAndSettle(const Duration(seconds: 4));
       for(int i=0;i<ballCount.getValue;i++){
         expect(find.descendant(of: find.byType(SizedBox),
@@ -34,8 +33,7 @@ void main(){
 
     testWidgets("test if balls are shuffling", (tester)async {
 
-      await tester.pumpWidget(MaterialApp(home: GameHome(gameSettings: gameSettings,
-        gameInstruction: GameInstruction(title: '',description: ''),)));
+      await tester.pumpWidget(MaterialApp(home: GameHome(gameSettings: gameSettings)));
       await tester.pumpAndSettle(const Duration(milliseconds: 500));
       double ballPosition1 = tester.getCenter(find.byKey(const ValueKey(0)),).dx;
       double ballPosition2 = tester.getCenter(find.byKey(const ValueKey(1)),).dx;
@@ -61,8 +59,7 @@ void main(){
 
     testWidgets("test if you can quit game", (tester)async{
       await tester.pumpWidget(MaterialApp(home: GameHome(
-          gameSettings:gameSettings,
-          gameInstruction: GameInstruction(title: '',description: ''))));
+          gameSettings:gameSettings)));
       await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       await tester.tap(find.byIcon(Icons.close));
@@ -79,8 +76,7 @@ void main(){
 
     testWidgets("test if you can switch mode", (tester) async{
       await tester.pumpWidget(MaterialApp(
-          home: GameHome(gameSettings:gameSettings,
-              gameInstruction: GameInstruction(title: '',description: ''))));
+          home: GameHome(gameSettings:gameSettings)));
       await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       await tester.tap(find.byIcon(Icons.unfold_more));

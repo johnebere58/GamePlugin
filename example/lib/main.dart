@@ -42,19 +42,51 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
-        child: TextButton(
-          onPressed: (){
-            GameManager().launchGame(context,
-                gameSettings: GameSettings(
-                  gameId: GameIds.find_ball_game,
-                  ballShape: BallShape.circle,
-                  ballSize: 50.0,gameMode: GameMode.easy,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: double.infinity,
+              height: 50,
+              margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
+              child: TextButton(
+                style: TextButton.styleFrom(
+                    backgroundColor: Colors.blue,primary: Colors.white
                 ),
-            gameInstruction: GameInstruction(
-                title: "Find Ball",
-                description: "Find the ball with the color as the balls are hidden and shuffled around"));
-          },
-          child: const Text("Play Game"),
+                onPressed: (){
+                  GameManager().launchGame(context,
+                      gameSettings: GameSettings(
+                        gameId: GameIds.find_ball_game,
+                        ballShape: BallShape.square,
+                        ballSize: 50.0,gameMode: GameMode.normal,
+                      ),
+                  );
+                },
+                child: const Text("Find Ball Game"),
+              ),
+            ),
+            Container(
+              width: double.infinity,
+              height: 50,
+              margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.blue,primary: Colors.white
+                ),
+                onPressed: (){
+                  GameManager().launchGame(context,
+                      gameSettings: GameSettings(
+                        gameId: GameIds.find_bug_game,
+                        ballShape: BallShape.circle,
+                        ballSize: 50.0,gameMode: GameMode.normal,
+                      ),
+                  );
+                },
+                child: const Text("Find Bug Game"),
+              ),
+            ),
+
+          ],
         ),
       ),
      // This trailing comma makes auto-formatting nicer for build methods.

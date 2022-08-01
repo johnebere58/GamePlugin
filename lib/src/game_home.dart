@@ -1,6 +1,7 @@
 
 import 'dart:async';
 import 'dart:typed_data';
+import 'dart:ui';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:gameplugin/gameplugin.dart';
@@ -11,6 +12,7 @@ import 'package:gameplugin/src/blocs/game_settings_controller.dart';
 import 'package:gameplugin/src/blocs/pop_single_text_controller.dart';
 import 'package:gameplugin/src/blocs/restart_controller.dart';
 import 'package:gameplugin/src/blocs/timer_controller.dart';
+import 'package:gameplugin/src/games/find_bug_game.dart';
 import 'package:gameplugin/src/models/game_instruction.dart';
 import 'package:gameplugin/src/models/game_settings.dart';
 import 'package:gameplugin/src/models/score_model.dart';
@@ -26,12 +28,12 @@ import 'games/find_ball_game.dart';
 import 'extensions/ball_count_extention.dart';
 import 'package:vibration/vibration.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:gameplugin/src/extensions/game_id_extention.dart';
 
 
 class GameHome extends StatefulWidget {
   final GameSettings gameSettings;
-  final GameInstruction gameInstruction;
-  const GameHome({required this.gameSettings,required this.gameInstruction,
+  const GameHome({required this.gameSettings,
     Key? key}) : super(key: key);
 
   @override
@@ -42,19 +44,18 @@ class _GameHomeState extends State<GameHome> with TickerProviderStateMixin, Widg
 
 
   late GameSettings _gameSettings;
-  late GameInstruction _gameInstruction;
   final List<StreamSubscription> _streamSubscriptions = [];
   late AnimationController _animationController;
   bool enableSound = false;
   bool enableVibrate = false;
   AudioPlayer audioPlayer = AudioPlayer();
+  bool gamePaused = false;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     loadSound();
     _gameSettings = widget.gameSettings;
-    _gameInstruction = widget.gameInstruction;
 
     _animationController = AnimationController(
       vsync: this,
@@ -124,7 +125,11 @@ class _GameHomeState extends State<GameHome> with TickerProviderStateMixin, Widg
               //   ),
               // ),
 
-              FindBallGame(_gameSettings,key: ValueKey(_gameSettings.gameMode.index),),
+              if(_gameSettings.gameId==GameIds.find_ball_game)
+                FindBallGame(_gameSettings,key: ValueKey(_gameSettings.gameMode.index),),
+
+              if(_gameSettings.gameId==GameIds.find_bug_game)
+                FindBugGame(_gameSettings,key: ValueKey(_gameSettings.gameMode.index),),
 
               restartButton(),
 
@@ -135,13 +140,17 @@ class _GameHomeState extends State<GameHome> with TickerProviderStateMixin, Widg
                   margin: const EdgeInsets.fromLTRB(75, 28, 0, 0),
                   child: CountDownTimerWidget(
                     time: _gameSettings.gateTime,onComplete: (){
-                      EndGameController.instance.endGame();
+                      // EndGameController.instance.endGame();
                   },
                   ),
                 ),
               ),
 
+              pauseButton(),
+
               const PopTextWidget(),
+
+              // pauseWidget(),
 
               introScreen(),
 
@@ -158,7 +167,34 @@ class _GameHomeState extends State<GameHome> with TickerProviderStateMixin, Widg
     );
   }
 
- Widget restartButton(){
+ Widget pauseButton(){
+    return Align(alignment: Alignment.topRight,
+      child: SafeArea(
+        child: Container(
+          width: 40,height: 40,
+          margin: const EdgeInsets.only(top: 20,right: 140,bottom: 20),
+          child: ElevatedButton(
+            onPressed: ()async{
+              pauseGame();
+            },
+            style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.all(0),
+                shape:  CircleBorder(
+                    side: BorderSide(
+                        color: black.withOpacity(.1),width: 1
+                    )
+                ),
+                elevation: 5,shadowColor: black.withOpacity(.1),
+                primary: white
+            ),
+            child: const Icon(Icons.pause_circle_filled,
+              color: black,),
+          ),
+        ),
+      ),);
+}
+
+Widget restartButton(){
     return Align(alignment: Alignment.topRight,
       child: SafeArea(
         child: Container(
@@ -166,7 +202,9 @@ class _GameHomeState extends State<GameHome> with TickerProviderStateMixin, Widg
           margin: const EdgeInsets.only(top: 20,right: 80,bottom: 20),
           child: ElevatedButton(
             onPressed: ()async{
-              restartGame();
+              yesNoDialog(context, "Restart Game", "are you sure?", (){
+                restartGame();
+              });
             },
             style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.all(0),
@@ -184,6 +222,8 @@ class _GameHomeState extends State<GameHome> with TickerProviderStateMixin, Widg
         ),
       ),);
 }
+
+
 
 Widget settingsButton(){
     return Align(alignment: Alignment.topRight,
@@ -276,9 +316,9 @@ Widget introScreen(){
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               addSpace(80),
-              Text(_gameInstruction.title,style: textStyle(true, 35, black),),
+              Text(_gameSettings.gameId.title,style: textStyle(true, 35, black),),
               addSpace(10),
-              Text(_gameInstruction.description,style: textStyle(false, 16, black),),
+              Text(_gameSettings.gameId.description,style: textStyle(false, 16, black),),
               Expanded(child: Container()),
               Align(alignment: Alignment.topRight,
               child:  SizedBox(
@@ -313,21 +353,27 @@ Widget introScreen(){
 
 
  void pauseGame(){
+  gamePaused=true;
   TimerController.instance.pause();
   audioPlayer.stop();
   checkSettings();
+  if(mounted)setState(() {});
  }
 
  void resumeGame(){
+  gamePaused=false;
   TimerController.instance.resume();
   checkSettings();
+  if(mounted)setState(() {});
  }
 
  void restartGame(){
+   gamePaused=false;
   TimerController.instance.resetTimer();
   EndGameController.instance.resetScore();
   RestartController.instance.restartGame(afresh: true);
   checkSettings();
+   if(mounted)setState(() {});
  }
 
   @override
@@ -373,5 +419,79 @@ Widget introScreen(){
   Vibration.vibrate(
     duration:100
   );
+  }
+
+  Widget pauseWidget(){
+
+
+    return IgnorePointer(
+      ignoring: !gamePaused,
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 500),
+        opacity: !gamePaused?0:1,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            AnimatedOpacity(
+              opacity: 1,duration: const Duration(milliseconds: 300),
+              child: ClipRect(
+                  child:BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
+                      child: Container(
+                        color: Colors.white.withOpacity(.5),
+                      ))
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.all(40),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.pause_circle_outline,size: 100,),
+                  addSpace(20),
+                  Text(
+                      "Game Paused",
+                      style: textStyle(true, 23, black),textAlign: TextAlign.center),
+
+
+                  addSpace(20),
+
+                  Row(
+                    children: [
+
+                      Flexible(fit: FlexFit.tight,
+                        child: Container(
+                          width: double.infinity,
+                          height: 50,
+                          child: TextButton(
+                            onPressed: (){
+                              resumeGame();
+                            },
+                            style: TextButton.styleFrom(
+                                backgroundColor: black,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)
+                                )
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text("Resume",style: textStyle(true, 20, white),),
+                                // addSpaceWidth(5),
+                                // const Icon(Icons.refresh,size: 25,color: white,)
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }

@@ -178,7 +178,7 @@ class GameEndWidget extends StatefulWidget {
                                  color: passed?blue0:black,shape: BoxShape.circle
                                ),
                                alignment: Alignment.center,
-                               child: Text("${score.toStringAsFixed(0)}%",style: textStyle(true, 18, white),)),
+                               child: Text("${score.toStringAsFixed(0)}",style: textStyle(true, 18, white),)),
                            addSpace(5),
                            Text("Score",style: textStyle(true, 16, black),),
 
@@ -188,7 +188,7 @@ class GameEndWidget extends StatefulWidget {
                    ),
                    if(!passed)Container(
                      margin: const EdgeInsets.only(top: 20),
-                     child: Text("Score up to ${passPercentage}% to pass the game",
+                     child: Text("Score up to ${passPercentage.toStringAsFixed(0)} to win the game",
                          style: textStyle(false, 14, black),
                          textAlign: TextAlign.center),
                    ),

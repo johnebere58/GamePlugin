@@ -13,6 +13,7 @@ import 'package:gameplugin/src/models/ball_info.dart';
 import 'package:gameplugin/src/models/game_mode.dart';
 import 'package:gameplugin/src/utils/screen_utils.dart';
 import 'package:gameplugin/src/utils/widget_utils.dart';
+import 'package:gameplugin/src/widgets/bud_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../blocs/ball_event_controller.dart';
@@ -22,24 +23,26 @@ import '../extensions/ball_count_extention.dart';
 import '../widgets/ball_widget.dart';
 import 'package:gameplugin/src/extensions/game_mode_extention.dart';
 import 'package:gameplugin/src/extensions/ball_count_extention.dart';
+import 'package:animated_rotation/animated_rotation.dart' as anim;
 
-class FindBallGame extends StatefulWidget {
+class FindBugGame extends StatefulWidget {
 
   final GameSettings gameSettings;
-  const FindBallGame(this.gameSettings,{Key? key}) : super(key: key);
+  const FindBugGame(this.gameSettings,{Key? key}) : super(key: key);
 
   @override
-  _FindBallGameState createState() => _FindBallGameState();
+  _FindBugGameState createState() => _FindBugGameState();
 }
 
-class _FindBallGameState extends State<FindBallGame> {
+class _FindBugGameState extends State<FindBugGame> {
 
   final List<StreamSubscription> _streamSubscriptions = [];
   final BallEventController _ballEventController = BallEventController.instance;
   final List<Widget> _balls = [];
   late List _ballIds;
   late GameSettings gameSettings;
-  int _ballIndexToFind = -1;
+  int _bugIndexToFind = -1;
+  bool hideBug = false;
   bool _showNameOfBallToFind = false;
   int _shuffleCount = 0;
   late List _allBalls;
@@ -58,16 +61,16 @@ class _FindBallGameState extends State<FindBallGame> {
     }));
     _streamSubscriptions.add(BallController.instance.stream.listen((BallInfo? ballInfo) {
       if(ballInfo==null)return;
-      if(_ballIndexToFind==-1)return;
+      if(_bugIndexToFind==-1)return;
 
-      if(ballInfo.ballId == _ballIndexToFind){
+      if(ballInfo.ballId == _bugIndexToFind){
          PopSingleTextController.instance.popCorrect();
          EndGameController.instance.increasePassed();
        }else{
          PopSingleTextController.instance.popWrong();
          EndGameController.instance.increaseFailed();
        }
-      _ballIndexToFind=-1;
+      _bugIndexToFind=-1;
       if(mounted)setState(() {});
 
       if(EndGameController.instance.rounds>=gameSettings.totalRound){
@@ -119,20 +122,29 @@ class _FindBallGameState extends State<FindBallGame> {
       child: Stack(
         alignment: Alignment.center,
         children: [
+
+
+
+
           SizedBox(
             width: _screenSize,
             height: _screenSize,
             child: Stack(
-              children: List.generate(_ballIds.length, (index) {
-                Widget ball = _balls[index];
-                var key = ball.key;
-                // Alignment alignment = getAlignment(key);
-                return AnimatedPositioned(
-                  // alignment: alignment,
-                  top: getTop(key),left:getLeft(key),
-                  duration: const Duration(milliseconds: /*ballCount == BallCount.eight?1000:*/500),
-                  child: ball, );
-              }),
+              children: [
+                bugWidget(),
+                Stack(
+                  children: List.generate(_ballIds.length, (index) {
+                    Widget ball = _balls[index];
+                    var key = ball.key;
+                    // Alignment alignment = getAlignment(key);
+                    return AnimatedPositioned(
+                      // alignment: alignment,
+                      top: getTop(key),left:getLeft(key),
+                      duration: const Duration(milliseconds:500),
+                      child: ball, );
+                  }),
+                ),
+              ],
             ),
           ),
 
@@ -140,15 +152,22 @@ class _FindBallGameState extends State<FindBallGame> {
               alignment: Alignment.topCenter,
               child: SafeArea(child: Container(
                   margin: const EdgeInsets.only(top: 100),
-                  child: ballToFindTextWidget())))
+                  child: ballToFindTextWidget()))),
+
+
         ],
       ),
     );
   }
 
-  double getTop(var key){
-    int itemId =( key as ValueKey).value;
-    int position = _ballIds.indexOf(itemId);
+  double getTop(var key,{int? index}){
+    int position;
+    if(index!=null){
+      position = index;
+    }else {
+      int itemId = (key as ValueKey).value;
+      position = index ?? _ballIds.indexOf(itemId);
+    }
 
     int balls = ballCount.getValue;
     double ballSize = gameSettings.ballSize;
@@ -176,9 +195,14 @@ class _FindBallGameState extends State<FindBallGame> {
     return 0;
   }
 
-  double getLeft(var key){
-    int itemId =( key as ValueKey).value;
-    int position = _ballIds.indexOf(itemId);
+  double getLeft(var key,{int? index}){
+    int position;
+    if(index!=null){
+      position = index;
+    }else {
+      int itemId = (key as ValueKey).value;
+      position = index ?? _ballIds.indexOf(itemId);
+    }
 
     int balls = ballCount.getValue;
     double ballSize = gameSettings.ballSize;
@@ -206,63 +230,60 @@ class _FindBallGameState extends State<FindBallGame> {
     return 0;
   }
 
-/*  Alignment getAlignment(var key){
-    int itemId =( key as ValueKey).value;
-    int position = _ballIds.indexOf(itemId);
-    if(ballCount == BallCount.two){
-      if(position==0)return Alignment.centerRight;
-      if(position==1)return Alignment.centerLeft;
-    }
-    if(ballCount == BallCount.three){
-      if(position==0)return Alignment.topCenter;
-      if(position==1)return Alignment.bottomRight;
-      if(position==2)return Alignment.bottomLeft;
-    }
-    if(ballCount == BallCount.four){
-      if(position==0)return Alignment.topCenter;
-      if(position==1)return Alignment.centerLeft;
-      if(position==2)return Alignment.centerRight;
-      if(position==3)return Alignment.bottomCenter;
-    }
+  double getAngle(int position){
 
-    if(position==0)return Alignment.topCenter;
-    if(position==1)return Alignment.centerLeft;
-    if(position==2)return Alignment.centerRight;
-    if(position==3)return Alignment.bottomCenter;
-    if(position==4)return Alignment.topLeft;
-    if(position==5)return Alignment.topRight;
-    if(position==6)return Alignment.bottomLeft;
-    if(position==7)return Alignment.bottomRight;
-    return Alignment.bottomLeft;
+    double top = getTop(null,index: position);
+    double left = getLeft(null,index: position);
+
+    double halfBall = gameSettings.ballSize/2;
+    double halfScreen = _screenSize/2 - halfBall;
+
+    if(top==0)return 0;
+    double angle = 0;
+    if(top>halfScreen) {
+      //facing bottom
+      angle += 180;
+      if (left > halfScreen) {
+        angle -= 45;
+      } else {
+        angle += 45;
+      }
+    }else{
+      //facing top
+      if (left > halfScreen) {
+        angle += 45;
+      } else {
+        angle -= 45;
+      }
+    }
+    return angle;
   }
 
-  double getOffset(var key){
-    int itemId =( key as ValueKey).value;
-    int position = _ballIds.indexOf(itemId);
-
-    if(position<4)return 0;
-
-    double offset = _screenSize/5;
-
-    return offset;
-  }*/
 
 
   startShuffle({bool afresh=false})async{
     BallController.instance.canTap=false;
-    _showNameOfBallToFind = false;
-    setState((){});
-    _ballIndexToFind=-1;
-
-    _ballEventController.showBall();
-
-    await Future.delayed( Duration(milliseconds: 2000+(afresh?2000:0)));
-
     _ballEventController.hideBall();
 
-    int shakeCount = _shuffleCount%5==0?5:_shuffleCount.isEven?2:1;
+    _showNameOfBallToFind = false;
+    _bugIndexToFind=-1;
+    setState((){});
+    await Future.delayed( Duration(milliseconds: 2000));
+    _bugIndexToFind = Random().nextInt(_ballIds.length);
+    setState((){});
+    await Future.delayed( Duration(milliseconds: 1000));
+    hideBug = true;
+    setState((){});
+    // _ballEventController.showBall();
+
+    // await Future.delayed( Duration(milliseconds: 2000+(afresh?2000:0)));
+
+    // _ballEventController.hideBall();
+
+    int shakeCount = _shuffleCount%5==0?5:_shuffleCount.isEven?3:2;
     shuffleBall(shakeCount,(){
-      Future.delayed(const Duration(milliseconds: /*ballCount == BallCount.eight?1000:*/600),(){
+      Future.delayed(const Duration(milliseconds: 600),(){
+        // _ballEventController.hideBall();
         _showNameOfBallToFind = true;
         setState((){});
         BallController.instance.canTap=true;
@@ -271,15 +292,18 @@ class _FindBallGameState extends State<FindBallGame> {
 
     _shuffleCount ++;
 
-    _ballIndexToFind = Random().nextInt(_ballIds.length);
+    // _bugIndexToFind = Random().nextInt(_ballIds.length);
   }
 
   shuffleBall(int counter,onComplete)async{
     if(!mounted)return;
     int newCount = counter-1;
+    // if(counter==0)_bugIndexToFind = Random().nextInt(_ballIds.length);
     await Future.delayed(const Duration(milliseconds: 500));
     _ballIds.shuffle();
     if(mounted)setState((){});
+    // if(counter.isEven)_ballEventController.showBall();
+    // if(counter.isOdd)_ballEventController.hideBall();
     if(counter>0){
       shuffleBall(newCount,onComplete);
     }else{
@@ -292,11 +316,37 @@ class _FindBallGameState extends State<FindBallGame> {
     return AnimatedOpacity(
       duration: const Duration(milliseconds: 500),
       opacity: !_showNameOfBallToFind? 0:1,
-      child: Text(_ballIndexToFind==-1?"":"Find ${_allBalls[_ballIndexToFind].ballName}",
-        style: textStyle(true, 25,
-          _ballIndexToFind==-1?Colors.transparent:
-          _allBalls[_ballIndexToFind].ballColor,
+      child: Text(_bugIndexToFind==-1?"":"Find the bug",
+        style: textStyle(true, 25, Colors.blue,
           ),),
     );
+  }
+
+  Widget bugWidget(){
+
+    int? bugPosition;
+    if(_bugIndexToFind!=-1) {
+      bugPosition = _ballIds.indexOf(_bugIndexToFind);
+    }
+    double halfBall = gameSettings.ballSize/2;
+    return AnimatedPositioned(
+      // alignment: alignment,
+      top: bugPosition==null?(
+          (_screenSize/2)-(halfBall)
+      ): getTop(null,index: bugPosition),
+      left: bugPosition==null?(
+          (_screenSize/2)-(halfBall)
+      ):
+      getLeft(null, index: bugPosition),
+
+      duration: const Duration(milliseconds:500),
+      child:  anim.AnimatedRotation(
+        duration: const Duration(milliseconds: 200), angle: bugPosition==null?0:getAngle(bugPosition!),
+        child: Container(
+            alignment: Alignment.center,
+            width: gameSettings.ballSize,
+            height: gameSettings.ballSize,
+            child: const BugWidget(key: ValueKey("bug"))),
+      ), );
   }
 }

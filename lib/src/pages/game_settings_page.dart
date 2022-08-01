@@ -113,7 +113,7 @@ class GameSettingsPage extends StatefulWidget {
                                  height: 50,width: 70,
                                  color: black,
                                  alignment: Alignment.center,
-                                 child: Text("$highScore%",style: textStyle(true, 16, white),),
+                                 child: Text("${highScore.toStringAsFixed(0)}",style: textStyle(true, 16, white),),
                                )
                              ],
                            ),
@@ -136,7 +136,7 @@ class GameSettingsPage extends StatefulWidget {
                                  height: 50,width: 70,
                                  color: black,
                                  alignment: Alignment.center,
-                                 child: Text("$bestAccuracy%",style: textStyle(true, 16, white),),
+                                 child: Text("${bestAccuracy.toStringAsFixed(0)}%",style: textStyle(true, 16, white),),
                                )
                              ],
                            ),

@@ -11,6 +11,8 @@ class BallController {
 
   Stream<BallInfo?> get stream => _streamController.stream;
 
+  bool canTap = false;
+
   void ballTapped(BallInfo? ball){
     _streamController.add(ball);
   }
