@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:gameplugin/src/game_home.dart';
 import 'package:gameplugin/src/models/game_instruction.dart';
+import 'package:gameplugin/src/utils/transitions.dart';
 import 'package:gameplugin/src/utils/widget_utils.dart';
 
 import '../gameplugin.dart';
@@ -29,7 +30,7 @@ class GameManager{
      result: (_){
        if(_==null)return;
        if(onGamePlayed!=null)onGamePlayed(_);
-     });
+     },transitionBuilder: scaleTransition);
    }
 
  }
