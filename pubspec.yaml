@@ -50,5 +50,6 @@ flutter:
 
 
   assets:
+    - assets/game_images/
     - assets/images/
     - assets/sounds/

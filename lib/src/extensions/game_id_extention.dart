@@ -5,18 +5,22 @@ import 'package:gameplugin/src/models/game_mode.dart';
 extension GameIdExtension on GameIds{
 
   String get title =>
-      index == GameIds.find_ball_game.index?"Find Ball" :
-      index == GameIds.find_bug_game.index?"Find Bug" :
+      index == 0?"Find Ball" :
+      index == 1?"Hidden Bug" :
       "";
 
 
   String get description =>
-      index == GameIds.find_ball_game.index?
+      index == 0?
       "Find the ball with the color as the balls are hidden and shuffled around" :
-      index == GameIds.find_bug_game.index?
+      index == 1?
       "Find the hidden bug, as the balls are shuffled around" :
       "";
 
+  String get imageAsset =>
+      index == 0?"assets/game_images/hidden_bug.png" :
+      index == 1?"assets/game_images/hidden_bug.png" :
+      "";
 
 
 }
