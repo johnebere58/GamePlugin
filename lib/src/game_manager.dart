@@ -24,7 +24,7 @@ class GameManager{
    void launchGame(BuildContext context,
        {required GameSettings gameSettings,Function(dynamic)? onGamePlayed}){
 
-     assert(!initialized,"game not initialized, please call [GameManager.initialize] first");
+     assert(initialized,"game not initialized, please call [GameManager.initialize] first");
 
      launchNewScreen(context, GameHome(gameSettings:gameSettings),
      result: (_){
