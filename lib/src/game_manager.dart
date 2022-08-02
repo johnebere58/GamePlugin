@@ -21,13 +21,17 @@ class GameManager{
    }
 
    void launchGame(BuildContext context,
-       {required GameSettings gameSettings}){
+       {required GameSettings gameSettings,Function(dynamic)? onGamePlayed}){
 
      if(!initialized){
        throw Exception("game not initialized, please call [GameManager.initialize] first");
      }
 
-     launchNewScreen(context, GameHome(gameSettings:gameSettings));
+     launchNewScreen(context, GameHome(gameSettings:gameSettings),
+     result: (_){
+       if(_==null)return;
+       if(onGamePlayed!=null)onGamePlayed(_);
+     });
    }
 
  }
