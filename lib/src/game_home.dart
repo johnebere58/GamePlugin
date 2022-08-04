@@ -140,7 +140,7 @@ class _GameHomeState extends State<GameHome> with TickerProviderStateMixin, Widg
                   margin: const EdgeInsets.fromLTRB(75, 28, 0, 0),
                   child: CountDownTimerWidget(
                     time: _gameSettings.gateTime,onComplete: (){
-                      // EndGameController.instance.endGame();
+                      EndGameController.instance.endGame();
                   },
                   ),
                 ),
